@@ -6,8 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Calendar as CalendarIcon, PlusCircle } from "lucide-react";
-
+import { Calendar as CalendarIcon, Edit3 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +19,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { createOrganisation, isOrganisationUsernameUnique} from "@/actions/organisation";
+
+
+import { updateOrganisation, isOrganisationUsernameUnique} from "@/actions/organisation";
+
 
 type Props = {
   currentUser: any;
+  organisationInformation: any;
 };
 
 const FormSchema = z.object({
@@ -57,28 +60,17 @@ const FormSchema = z.object({
   }),
 });
 
-const OrganisationForm = ({ currentUser }: Props) => {
+const EditOrganisationForm = ({ currentUser, organisationInformation }: Props) => {
   const router = useRouter();
-
-
-
-  if (currentUser?.organisations?.length > 0) {
-    toast({
-      title: "Existing Organisation",
-      description:
-        "Only 1 organisation allowed on this account. Upgrade to create more.",
-    });
-    router.push("/dashboard");
-  }
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      username: "",
-      description: "",
-      email: "",
-      contactNumber: "",
+      name: organisationInformation.name,
+      username: organisationInformation.username,
+      description: organisationInformation.description,
+      email: organisationInformation.email,
+      contactNumber: organisationInformation.contactNumber,
     },
   });
 
@@ -96,7 +88,7 @@ const OrganisationForm = ({ currentUser }: Props) => {
 
     let isUserNameUnique = await isOrganisationUsernameUnique(data.username);
 
-    if (!isUserNameUnique) {
+    if (!isUserNameUnique && data.username !== organisationInformation.username) {
       toast({
         title: "Username Taken",
         description: "Please try another",
@@ -104,15 +96,15 @@ const OrganisationForm = ({ currentUser }: Props) => {
       return;
     }
 
-    let formData = { ...data, organisationMainUser: currentUser.id };
+    let formData = { ...data, organisationMainUser: currentUser._id };
 
-    await createOrganisation(formData, currentUser);
-
+    await updateOrganisation(organisationInformation.id, formData, currentUser);
     router.push("/dashboard");
+
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen ">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -120,11 +112,11 @@ const OrganisationForm = ({ currentUser }: Props) => {
         className="w-full max-w-xl p-8  shadow-md rounded-lg"
       >
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-center t">
+          <h1 className="text-3xl font-bold text-center ">
             <CalendarIcon className="inline-block h-8 w-8 mr-2" />
-            Create Organisation
+            Edit Organisation
           </h1>
-          <PlusCircle className="text-primary h-10 w-10" />
+          <Edit3 className="text-primary h-10 w-10" />
         </div>
 
         <Form {...form}>
@@ -225,9 +217,9 @@ const OrganisationForm = ({ currentUser }: Props) => {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary text-white font-semibold py-3 rounded-md transition duration-300"
+              className="w-full bg-primary hover:bg-indigo-700 text-white font-semibold py-3 rounded-md transition duration-300"
             >
-              Create Organisation
+              Update Organisation
             </Button>
           </form>
         </Form>
@@ -236,4 +228,4 @@ const OrganisationForm = ({ currentUser }: Props) => {
   );
 };
 
-export default OrganisationForm;
+export default EditOrganisationForm;
