@@ -12,15 +12,18 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { Trash } from "lucide-react"; // Import Lucide icon for delete
+import { deleteEvent } from "@/actions/event";
 // import { fetchDeleteEvent } from "@/app/api/event/deleteEvent/route";
 
 export function DeleteEventDialog({ eventId }: { eventId: string }) {
+
+	console.log("eventId", eventId)
 	const router = useRouter();
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const pressDeleteEventButton = async () => {
 		setIsDeleting(true);
-		// await fetchDeleteEvent(eventId);
+		await deleteEvent(eventId);
 		window.location.reload(); // Reload the page after deletion
 	};
 

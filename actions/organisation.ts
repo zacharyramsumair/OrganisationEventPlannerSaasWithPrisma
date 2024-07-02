@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
 import { db } from "@/db";
 
 
@@ -69,7 +68,7 @@ const createOrganisation = async (formData: any, currentUser: any) => {
 		revalidatePath("/dashboard");
 
 		return newOrganisation;
-	} catch (error) {
+	} catch (error:any) {
 		console.log(error.message);
 		throw new Error("Error while creating Organisation");
 	}
@@ -109,7 +108,7 @@ const getOrganisationByIdWithoutPopulatedEvents = async (
 		}
 
 		return organisation;
-	} catch (error) {
+	} catch (error:any) {
 		console.log(error.message);
 		throw new Error("Error while fetching Organisation");
 	}

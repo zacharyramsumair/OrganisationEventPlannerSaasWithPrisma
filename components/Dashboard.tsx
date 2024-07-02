@@ -75,12 +75,12 @@ const Dashboard = (props: Props) => {
                     </div>
 
                       <div className="flex flex-col gap-3 mt-4">
-                        <Link href={`/editEvent/${eve._id}`}>
+                        <Link href={`/editEvent/${eve.id}`}>
                           <Button className="w-full">
                             <Edit className="mr-2" /> Edit
                           </Button>
                         </Link>
-                        <DeleteEventDialog eventId={eve._id}/>
+                        <DeleteEventDialog eventId={eve.id}/>
                      
                       </div>
                     </div>

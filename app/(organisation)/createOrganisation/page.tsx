@@ -14,7 +14,6 @@ const CreateOrganisation = async (props: Props) => {
 		currentUser = await getUserByEmail(session?.user?.email);
 	}
 
-    console.log("currentUser", currentUser);
 
 	if (!currentUser) {
 		redirect("/");
