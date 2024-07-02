@@ -2,7 +2,7 @@ import LoginForm from "@/components/LoginForm";
 import LoginGithub from "@/components/LoginGithub";
 import React from "react";
 
-const SignIn = () => {
+const Login = () => {
   return (
     <div className="w-full flex mt-20 justify-center">
       <section className="flex flex-col w-[400px]">
@@ -14,4 +14,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;

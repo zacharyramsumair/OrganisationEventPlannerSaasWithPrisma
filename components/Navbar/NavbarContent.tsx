@@ -73,7 +73,7 @@ const NavbarContent = (props: Props) => {
 						<Link href="/dashboard">Dashboard</Link>
 					)}
 					{currentUser && (
-						<Button onClick={logout} variant={"ghost"}>
+						<Button onClick={() => logout()} variant={"ghost"}>
 							Logout
 						</Button>
 					)}
@@ -130,7 +130,7 @@ const NavbarContent = (props: Props) => {
 							</Link>
 						)}
 						{currentUser && (
-							<Button onClick={logout} variant={"ghost"} className="">
+							<Button onClick={() => logout()} variant={"ghost"} className="">
 								Logout
 							</Button>
 						)}

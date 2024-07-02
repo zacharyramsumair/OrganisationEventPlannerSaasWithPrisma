@@ -1,8 +1,4 @@
 import { auth } from "@/auth";
-import Link from "next/link";
-
-import Image from "next/image";
-import Logout from "../Logout";
 import { getUserByEmail } from "@/actions/auth";
 import NavbarContent from "./NavbarContent";
 
