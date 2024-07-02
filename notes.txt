@@ -1,0 +1,45 @@
+HOW TO GET GOOGLE CREDENTIALS
+1. search google cloud console credentials or https://console.cloud.google.com/apis/credentials
+2. Click on dropdown and create new project then switch to it
+3. Press Create Credentials and OauthClientID
+4. Configure consent screen (press)
+Select "external", create
+Fill in App name, user support email, Developer contact information only then Save and Continue
+Save and continue till  go to dashboard
+press credentials on sidebar then create credentials, OauthClientID
+Select application type as web application
+for Authorized JavaScript origins, put your bare url e.g. http://localhost:3000 (with no slash at the end)
+for Authorized redirect URIs put ur bare url followed by '/api/auth/callback/google' e.g. http://localhost:3000/api/auth/callback/google
+Create
+Copy Client ID and Client Secret
+put in .env
+also put NEXTAUTH_URL=http://localhost:3000 (bare url) and NEXTAUTH_SECRET=random
+
+
+
+HOW TO ADD TO GITHUB
+git add .
+git commit -m "message"
+git push -u origin main
+
+
+
+
+chatgpt request to make pages/components prettier
+
+can you make any additions to make this page/component stand out more. Im thinking icons from lucide-react, animations, better design, a spash of colour. If u are doing animations please use frames motion
+
+can you make any additions to make this page/component stand out more. Im thinking icons from lucide-react, animations, better design, a spash of colour. If u are doing animations please use frames motion. Go wild with it, make it beautiful and use all the design things that you know. I give you full freedom. 
+
+
+
+
+How to prevent commits to main from deploying on vercel
+You can look this https://github.com/orgs/vercel/discussions/60#discussioncomment-114386
+
+go to Settings > Git > Ignored Build Step and enter
+
+git log -1 --pretty=oneline --abbrev-commit | grep -w "\[skip deploy\]" && exit 0 || exit 1
+
+And you can then skip the deployment by adding [skip deploy] to the git commit message.
+
