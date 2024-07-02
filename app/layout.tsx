@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import Navbar from "@/components/Navbar/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
 					>
 						<Navbar />
 						<div className="min-h-screen">{children}</div>
+						<Footer/>
 					</ThemeProvider>
 
 					<Toaster />
