@@ -15,7 +15,7 @@ const NavbarContent = (props: Props) => {
 	const { currentUser } = props;
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const drawerRef = useRef(null);
+	const drawerRef:any = useRef(null);
 
 	const toggleDrawer = () => {
 		setIsDrawerOpen(!isDrawerOpen);
