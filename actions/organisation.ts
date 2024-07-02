@@ -1,12 +1,12 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-const prisma = new PrismaClient();
+import { db } from "@/db";
+
 
 const isOrganisationUsernameUnique = async (username: string) => {
-	const organisation = await prisma.organisation.findUnique({
+	const organisation = await db.organisation.findUnique({
 		where: { username: username.toLowerCase() },
 	});
 
@@ -45,7 +45,7 @@ const createOrganisation = async (formData: any, currentUser: any) => {
 			);
 		}
 
-		const newOrganisation = await prisma.organisation.create({
+		const newOrganisation = await db.organisation.create({
 			data: {
 				name,
 				description,
@@ -57,7 +57,7 @@ const createOrganisation = async (formData: any, currentUser: any) => {
 		});
 
 		// Update the current user's organisations array
-		await prisma.user.update({
+		await db.user.update({
 			where: { id: currentUser.id },
 			data: {
 				organisations: {
@@ -77,7 +77,7 @@ const createOrganisation = async (formData: any, currentUser: any) => {
 
 const getOrganisationById = async (organisationId: any) => {
 	try {
-		const organisation = await prisma.organisation.findUnique({
+		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId.id },
 			include: {
 				events: {
@@ -100,7 +100,7 @@ const getOrganisationByIdWithoutPopulatedEvents = async (
 	organisationId: any
 ) => {
 	try {
-		const organisation = await prisma.organisation.findUnique({
+		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId.id },
 		});
 
@@ -129,7 +129,7 @@ const updateOrganisation = async (
 			throw new Error("User does not own this organisation");
 		}
 
-		const updatedOrganisation = await prisma.organisation.update({
+		const updatedOrganisation = await db.organisation.update({
 			where: { id: organisationId },
 			data: updateData,
 		});
@@ -140,7 +140,7 @@ const updateOrganisation = async (
 		revalidatePath("/dashboard");
 
 		return updatedOrganisation;
-	} catch (error) {
+	} catch (error:any) {
 		console.log(error.message);
 		throw new Error("Error while updating Organisation");
 	}

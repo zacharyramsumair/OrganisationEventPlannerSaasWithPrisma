@@ -31,7 +31,6 @@ const dashboard = async (props: Props) => {
 	
 
   let organisationInformation = await getOrganisationById(currentUser?.organisations[0])
-  console.log(organisationInformation)
 
   
   return (
