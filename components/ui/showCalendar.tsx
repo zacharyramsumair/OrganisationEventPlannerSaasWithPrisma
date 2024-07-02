@@ -71,13 +71,14 @@ function ShowCalendar({
     };
 
     return (
+        // this is the squares when there is an event
       <motion.div
         {...props}
         className={cn(
           "relative",
           className,
           isEvent
-            ? "bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300 cursor-pointer"
+            ? "bg-primary text-primary-foreground cursor-pointer rounded-full"
             : "cursor-default"
         )}
         whileHover={{ scale: 1.1 }}
