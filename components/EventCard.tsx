@@ -2,8 +2,8 @@ import { BellRing, Calendar, MapPin, User, Clock } from "lucide-react";
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import convert24HourTo12Hour from "@/lib/convert24HourTo12Hour";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function EventCard({ className, event, ...props }: any) {
   return (
