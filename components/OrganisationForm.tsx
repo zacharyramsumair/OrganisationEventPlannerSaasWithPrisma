@@ -139,7 +139,7 @@ const OrganisationForm = ({ currentUser }: Props) => {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Leadership Council"
+                      placeholder="Organisation Name"
                       {...field}
                       className="w-full"
                     />
@@ -159,7 +159,7 @@ const OrganisationForm = ({ currentUser }: Props) => {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="leadershipCouncil"
+                      placeholder="username"
                       {...field}
                       className="w-full"
                     />
@@ -195,7 +195,7 @@ const OrganisationForm = ({ currentUser }: Props) => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="leadership@gmail.com"
+                      placeholder="organisation@gmail.com"
                       {...field}
                       className="w-full"
                     />
