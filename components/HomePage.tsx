@@ -80,8 +80,8 @@ function HomePage({ currentUser }: any) {
 						</Link>
 					)}
 
-					<a
-						href="https://www.loom.com/share/91487fbd56954a69aa304ff2382545ae?sid=8288cb22-87f4-4784-9624-7b43459bc9c1"
+					{/* <a
+						href="https://youtu.be/Q5LM985yUmQ"
 						className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
 					>
 						<svg
@@ -93,7 +93,7 @@ function HomePage({ currentUser }: any) {
 							<path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
 						</svg>
 						Watch Demo Video
-					</a>
+					</a> */}
 				</div>
 			</div>
 		</motion.section>
