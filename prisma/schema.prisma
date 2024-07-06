@@ -60,6 +60,7 @@ model Organisation {
   description            String?
   email                  String?
   contactNumber          String?
+  verified               Boolean @default(false)
   organisationMainUser   User    @relation(fields: [organisationMainUserId], references: [id], onDelete: Cascade)
   organisationMainUserId String  @db.ObjectId
   events                 Event[]
