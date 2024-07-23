@@ -81,7 +81,7 @@ function HomePage({ currentUser }: any) {
 					)}
 
 					<Link
-						href="https://www.loom.com/share/91487fbd56954a69aa304ff2382545ae?sid=8288cb22-87f4-4784-9624-7b43459bc9c1"
+						href="https://www.loom.com/share/7f3cff902c8c4befa78d3bc0989a92ec?sid=6f786839-475b-4900-8e68-9ba8f709b355"
 						className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
 						target="_blank"
 						prefetch={false}
