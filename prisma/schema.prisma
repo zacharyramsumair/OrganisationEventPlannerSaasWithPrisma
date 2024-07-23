@@ -33,7 +33,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          UserRole?       @default(ADMIN)
+  role          UserRole?       @default(USER)
   tier          Tier            @default(FREE)
   organisations Organisation[]
   // Optional for WebAuthn support
