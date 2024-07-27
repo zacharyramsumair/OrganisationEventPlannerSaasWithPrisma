@@ -7,15 +7,19 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { EventCard } from "../EventCard";
-import { getAllEventsForTheYear } from "@/actions/event";
+import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation, getAllEventsForTheYearForGroup } from "@/actions/event";
 
-
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  organisationUsername?: string;
+  groupId?: string;
+};
 
 function ShowCalendar({
   className,
   classNames,
   showOutsideDays = true,
+  organisationUsername,
+  groupId,
   ...props
 }: CalendarProps) {
   const [eventDates, setEventDates] = useState([]);
@@ -26,7 +30,15 @@ function ShowCalendar({
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const events = await getAllEventsForTheYear(currentYear);
+        let events;
+        if (organisationUsername) {
+          events = await getAllEventsForTheYearForOrganisation(currentYear, organisationUsername);
+        } else if (groupId) {
+          events = await getAllEventsForTheYearForGroup(currentYear, groupId);
+        } else {
+          events = await getAllEventsForTheYear(currentYear);
+        }
+        
         const parsedEvents:any = events.map(event => ({
           ...event,
           date: new Date(event.date)
@@ -42,7 +54,7 @@ function ShowCalendar({
     };
 
     fetchEvents();
-  }, [currentYear]);
+  }, [currentYear, organisationUsername, groupId]);
 
   const isEventDate = (date: Date) =>
     eventDates.some(

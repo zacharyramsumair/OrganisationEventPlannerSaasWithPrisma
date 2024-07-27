@@ -6,7 +6,13 @@ import { ShowCalendar } from '@/components/ui/showCalendar';
 import { Calendar, List } from 'lucide-react';
 import { Button } from './ui/button';
 
-const SeeEvents = () => {
+
+interface SeeEventsProps {
+  organisationUsername?: string;
+  groupId?: string;
+}
+
+const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) => {
   const [view, setView] = useState<'calendar' | 'list'>('calendar');
 
   const switchToCalendarView = () => {
@@ -41,7 +47,7 @@ const SeeEvents = () => {
         </motion.div>
       </div>
       <div className='mt-4'>
-        {view === 'calendar' ? <ShowCalendar /> : <EventsList />}
+        {view === 'calendar' ? <ShowCalendar organisationUsername={organisationUsername} groupId={groupId} /> : <EventsList organisationUsername={organisationUsername} groupId={groupId} />}
       </div>
     </>
   );

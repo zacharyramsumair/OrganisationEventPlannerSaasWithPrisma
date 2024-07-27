@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Importing Chevron icons
 import { toast } from "@/components/ui/use-toast";
 import { EventListTable } from "./EventListTable";
-import { getAllEventsForTheYear } from "@/actions/event";
+import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation, getAllEventsForTheYearForGroup } from "@/actions/event";
 
 interface Event {
   _id: string;
@@ -19,15 +19,28 @@ interface Event {
   organisation: string;
 }
 
-const EventsList: React.FC = () => {
+interface EventsListProps {
+  organisationUsername?: string;
+  groupId?: string;
+}
+
+const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupId }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
 
   const fetchEventsForMonth = async (year: number, month: number) => {
     try {
-      const fetchedEvents = await getAllEventsForTheYear(year);
-      const filteredEvents:any = fetchedEvents.filter(event => new Date(event.date).getMonth() + 1 === month);
+      let fetchedEvents;
+      if (organisationUsername) {
+        fetchedEvents = await getAllEventsForTheYearForOrganisation(year, organisationUsername);
+      } else if (groupId) {
+        fetchedEvents = await getAllEventsForTheYearForGroup(year, groupId);
+      } else {
+        fetchedEvents = await getAllEventsForTheYear(year);
+      }
+
+      const filteredEvents: any = fetchedEvents.filter(event => new Date(event.date).getMonth() + 1 === month);
       setEvents(filteredEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -58,20 +71,20 @@ const EventsList: React.FC = () => {
 
   useEffect(() => {
     fetchEventsForMonth(currentYear, currentMonth);
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, organisationUsername, groupId]);
 
   return (
     <div className="container mx-auto p-4">
       <div className="text-center">
-        <h1 className="md:text-3xl text-lg font-bold mb-4 p-2  rounded-lg inline-block">
+        <h1 className="md:text-3xl text-lg font-bold mb-4 p-2 rounded-lg inline-block">
           <ChevronLeft onClick={handlePreviousMonth} className="cursor-pointer inline-block" /> 
           Events for {new Date(currentYear, currentMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' })} 
           <ChevronRight onClick={handleNextMonth} className="cursor-pointer inline-block" />
         </h1>
         {events.length > 0 ? (
-          <EventListTable events={events}/>
+          <EventListTable events={events} />
         ) : (
-          <h3>No events carded for this month.</h3>
+          <h3>No events scheduled for this month.</h3>
         )}
       </div>
     </div>
