@@ -7,6 +7,7 @@ import { Edit, Plus, Trash2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteEventDialog } from "./DeleteEventDialog";
 import convert24HourTo12Hour from "@/lib/convert24HourTo12Hour";
+import SeeDashboard from "./SeeDashboard";
 
 type Props = {
   organisationInformation: any;
@@ -36,7 +37,7 @@ const Dashboard = (props: Props) => {
             </Link>
           </div>
 
-          <div>
+          {/* <div>
             <h2 className="text-xl font-semibold mb-4 text-primary">Your Events</h2>
 
             <div className="my-6">
@@ -63,7 +64,6 @@ const Dashboard = (props: Props) => {
                       <h3 className="text-lg font-medium text-primary">{eve.title}</h3>
                       <p className="text-justify truncate">
                           {eve.description.length > 50 ? `${eve.description.substring(0, 50)}...` : eve.description}
-                          {/* {eve.description} */}
                         </p>
                       <p className="text-gray-500 flex items-center mt-2">
                         <Calendar className="mr-1" />
@@ -90,7 +90,11 @@ const Dashboard = (props: Props) => {
             ) : (
               <p className="text-gray-500">No events available.</p>
             )}
-          </div>
+          </div> */}
+
+
+<SeeDashboard organisationInformation={props.organisationInformation} />
+
         </>
       )}
     </div>

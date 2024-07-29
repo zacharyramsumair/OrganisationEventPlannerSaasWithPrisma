@@ -33,7 +33,7 @@ const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) 
           className={`cursor-pointer flex flex-col items-center ${view === 'calendar' ? 'text-primary' : 'text-gray-500'}`}
         >
           <Calendar size={24} />
-          <span className='ml-2'>Calendar View</span>
+          <span className='ml-2'>Calendar</span>
         </motion.div>
         <div className="mx-2"></div>
         <motion.div
@@ -43,7 +43,7 @@ const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) 
           className={`cursor-pointer flex flex-col items-center ${view === 'list' ? 'text-primary' : 'text-gray-500'}`}
         >
           <List size={24} />
-          <span className='ml-2'>List View</span>
+          <span className='ml-2'>List</span>
         </motion.div>
       </div>
       <div className='mt-4'>
