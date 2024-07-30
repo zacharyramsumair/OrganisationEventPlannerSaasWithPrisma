@@ -7,12 +7,15 @@ import Link from "next/link";
 import convert24HourTo12Hour from "@/lib/convert24HourTo12Hour";
 import { DeleteEventDialog } from "./DeleteEventDialog";
 
+
 type Props = {
 	organisationInformation: any;
 };
 
-const SeeDashboard = (props: Props) => {
+const SeeDashboard =  (props: Props) => {
 	const [view, setView] = useState<"event" | "group">("event");
+
+
 
 	const switchToEventView = () => {
 		setView("event");
@@ -51,7 +54,65 @@ const SeeDashboard = (props: Props) => {
 			</div>
 			<div className="mt-4">
 				{view === "group" ? (
-					<h1>Groups</h1>
+                    <div>
+                    <h2 className="text-xl font-semibold mb-4 text-primary">
+                        Your Groups
+                    </h2>
+
+                    <div className="my-6">
+                        <Link href="/createGroup">
+                            <Button className="bg-green-500 hover:bg-green-600">
+                                <Plus className="mr-2" /> Create Group
+                            </Button>
+                        </Link>
+                    </div>
+
+                    {props.organisationInformation.groups &&
+                    props.organisationInformation.groups.length > 0 ? (
+                        <div className="space-y-4">
+                            {props.organisationInformation.groups.map(
+                                (group: any) => (
+                                    <motion.div
+                                        key={group._id}
+                                        className="p-4 border rounded-lg shadow-md"
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <div className="flex flex-col md:flex-row md:justify-between">
+                                            <div>
+                                                <h3 className="text-lg font-medium text-primary">
+                                                    {group.name}
+                                                </h3>
+                                                <p className="text-justify truncate">
+                                                    {group.description?.length > 50
+                                                        ? `${group.description.substring(
+                                                                0,
+                                                                50
+                                                          )}...`
+                                                        : group.description}
+                                                </p>
+                                                
+                                            </div>
+
+                                            {/* <div className="flex flex-col gap-3 mt-4">
+                                                <Link href={`/editEvent/${group.id}`}>
+                                                    <Button className="w-full">
+                                                        <Edit className="mr-2" /> Edit
+                                                    </Button>
+                                                </Link>
+                                                <DeleteEventDialog eventId={group.id} />
+                                            </div> */}
+                                        </div>
+                                    </motion.div>
+                                )
+                            )}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">This Organisation is not a part of any group</p>
+                    )}
+                </div>
+
 				) : (
 					<div>
 						<h2 className="text-xl font-semibold mb-4 text-primary">
@@ -84,7 +145,7 @@ const SeeDashboard = (props: Props) => {
 														{eve.title}
 													</h3>
 													<p className="text-justify truncate">
-														{eve.description.length > 50
+														{eve.description?.length > 50
 															? `${eve.description.substring(
 																	0,
 																	50
