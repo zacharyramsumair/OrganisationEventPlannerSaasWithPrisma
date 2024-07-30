@@ -39,7 +39,6 @@ model User {
 
 model Group {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  joinId              String   @unique
   joincode            String
   name                String
   description         String?

@@ -89,7 +89,19 @@ const getOrganisationById = async (organisationId: any) => {
 			throw new Error("Organisation not found");
 		}
 
-		return organisation;
+
+		const groups = await db.group.findMany({
+			where: { id: { in: organisation.groups } },
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				joincode: true,
+			},
+		});
+
+
+		return {...organisation, infoForGroups: groups};
 	} catch (error) {
 		throw new Error("Error while fetching Organisation");
 	}

@@ -20,13 +20,11 @@ const createGroup = async (formData: any) => {
 
   try {
     // Generate UUID for joinId and random 10-letter string for joincode
-    const joinId = uuidv4();
     const joincode = generateRandomCode(10);
 
     // Create a new group
     const newGroup = await db.group.create({
       data: {
-        joinId,
         joincode,
         name,
         description: description || "",
