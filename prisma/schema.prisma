@@ -39,11 +39,12 @@ model User {
 
 model Group {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  joincode            String
+  joincode            String  @unique
+  secret              String
   name                String
   description         String?
   image               String?
-  adminOrganisationId String   @db.ObjectId
+  adminOrganisationIds String[]   @db.ObjectId
   organisations       String[] @db.ObjectId
 
   createdAt DateTime @default(now())

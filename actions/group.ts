@@ -2,127 +2,280 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import { getOrganisationByIdWithoutPopulatedEvents } from "./organisation";
 
 type Error = any;
 
 const generateRandomCode = (length: number) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	let result = "";
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(
+			Math.floor(Math.random() * characters.length)
+		);
+	}
+	return result;
 };
 
 const createGroup = async (formData: any) => {
-  const { name, description, image, adminOrganisationId } = formData;
+	const { name, description, image, adminOrganisationId } = formData;
 
-  try {
-    // Generate UUID for joinId and random 10-letter string for joincode
-    const joincode = generateRandomCode(10);
+	try {
+		// Generate UUID for joinId and random 10-letter string for joincode
+		const joincode = uuidv4();
+		const secret = generateRandomCode(10);
 
-    // Create a new group
-    const newGroup = await db.group.create({
-      data: {
-        joincode,
-        name,
-        description: description || "",
-        image: image || "",
-        adminOrganisationId,
-      },
-    });
+		// Create a new group
+		const newGroup = await db.group.create({
+			data: {
+				joincode,
+				secret,
+				name,
+				description: description || "",
+				image: image || "",
+				adminOrganisationIds: [adminOrganisationId],
+				organisations: [adminOrganisationId],
+			},
+		});
 
-    // Fetch the current organisation
-    const organisation = await db.organisation.findUnique({
-      where: { id: adminOrganisationId },
-    });
+		// Fetch the current organisation
+		const organisation = await db.organisation.findUnique({
+			where: { id: adminOrganisationId },
+		});
 
-    if (!organisation) {
-      throw new Error("Organisation not found");
-    }
+		if (!organisation) {
+			throw new Error("Organisation not found");
+		}
 
-    // Push the new group ID to the end of the groups array
-    const updatedGroups = organisation.groups ? [...organisation.groups, newGroup.id] : [newGroup.id];
+		// Push the new group ID to the end of the groups array
+		const updatedGroups = organisation.groups
+			? [...organisation.groups, newGroup.id]
+			: [newGroup.id];
 
-    // Update the organisation with the new groups array
-    await db.organisation.update({
-      where: { id: adminOrganisationId },
-      data: {
-        groups: updatedGroups,
-      },
-    });
+		// Update the organisation with the new groups array
+		await db.organisation.update({
+			where: { id: adminOrganisationId },
+			data: {
+				groups: updatedGroups,
+			},
+		});
 
-    revalidatePath("/dashboard");
-    return newGroup;
-  } catch (error: Error) {
-    console.error("Error while creating group:", error.message);
-    throw new Error("Error while creating group");
-  }
+		revalidatePath("/dashboard");
+		return newGroup;
+	} catch (error) {
+		console.error("Error while creating group:", error.message);
+		throw new Error("Error while creating group");
+	}
 };
 
 const joinGroup = async (groupId: string, organisationId: string) => {
-  try {
-    // Add the organisation to the group
-    const updatedGroup = await db.group.update({
-      where: { id: groupId },
-      data: {
-        organisations: {
-          connect: { id: organisationId },
-        },
-      },
-    });
+	try {
+		const group = await db.group.findUnique({
+			where: { id: groupId },
+		});
 
-    revalidatePath("/groups");
-    return updatedGroup;
-  } catch (error: Error) {
-    console.error("Error while joining group:", error.message);
-    throw new Error("Error while joining group");
-  }
+		if (!group) {
+			throw new Error("Group not found");
+		}
+
+
+		const organisation = await db.organisation.findUnique({
+			where: { id: organisationId },
+		});
+
+		if (!organisation) {
+			throw new Error("Organisation not found");
+		}
+
+
+
+		// Add the organisation to the group
+		const updatedGroup = await db.group.update({
+			where: { id: groupId },
+			data: {
+				organisations: [...group.organisations, organisationId],
+			},
+		});
+
+		//add group to organisation
+		const updatedOrganisation = await db.organisation.update({
+			where: { id: organisationId },
+			data: {
+				groups: [...organisation.groups, groupId],
+			},
+		});
+
+		revalidatePath(`/group/${groupId}`);
+		return updatedGroup;
+	} catch (error) {
+		console.error("Error while joining group:", error.message);
+		throw new Error("Error while joining group");
+	}
 };
 
 const leaveGroup = async (groupId: string, organisationId: string) => {
-  try {
-    // Remove the organisation from the group
-    const updatedGroup = await db.group.update({
-      where: { id: groupId },
-      data: {
-        organisations: {
-          disconnect: { id: organisationId },
-        },
-      },
-    });
+	try {
+		const group = await db.group.findUnique({
+			where: { id: groupId },
+		});
 
-    revalidatePath("/groups");
-    return updatedGroup;
-  } catch (error: Error) {
-    console.error("Error while leaving group:", error.message);
-    throw new Error("Error while leaving group");
-  }
+		if (!group) {
+			throw new Error("Group not found");
+		}
+
+
+		const organisation = await db.organisation.findUnique({
+			where: { id: organisationId },
+		});
+
+		if (!organisation) {
+			throw new Error("Organisation not found");
+		}
+
+
+		//remove group from organisation
+
+		let newGroupList = organisation.groups;
+
+		const indexOfGroup = newGroupList.indexOf(groupId);
+		if (indexOfGroup > -1) { // only splice array when item is found
+			newGroupList.splice(indexOfGroup, 1); // 2nd parameter means remove one item only
+		  }
+
+		//remove organisation from group
+
+		let newOrganisationList = group.organisations;
+
+		const indexOfOrganisation = newOrganisationList.indexOf(organisationId);
+		if (indexOfOrganisation > -1) { // only splice array when item is found
+			newOrganisationList.splice(indexOfOrganisation, 1); // 2nd parameter means remove one item only
+		  }
+
+		// Add the organisation to the group
+		const updatedGroup = await db.group.update({
+			where: { id: groupId },
+			data: {
+				organisations: newOrganisationList,
+			},
+		});
+
+		//add group to organisation
+		const updatedOrganisation = await db.organisation.update({
+			where: { id: organisationId },
+			data: {
+				groups: newGroupList,
+			},
+		});
+
+		revalidatePath(`/dashboard`);
+		return updatedGroup;
+	} catch (error) {
+		console.error("Error while leaving group:", error.message);
+		throw new Error("Error while joining group");
+	}
 };
 
-const deleteGroup = async (groupId: string) => {
-  try {
-    // Find and delete the group by its ID
-    await db.group.delete({
-      where: { id: groupId },
-    });
 
-    revalidatePath("/groups");
+const removeOrganisationFromGroup = async (currentUser:any,groupId: string, organisationId: string) => {
+	try {
+		const group = await db.group.findUnique({
+			where: { id: groupId },
+		});
+		
+		if (!group) {
+			throw new Error("Group not found");
+		}
+		
+		//check if user is admin of this group
 
-    return { message: "Group deleted successfully" };
-  } catch (error: Error) {
-    console.error("Error while deleting group:", error.message);
-    throw new Error("Error while deleting group");
-  }
+
+
+
+
+		
+
+		const organisation = await db.organisation.findUnique({
+			where: { id: organisationId },
+		});
+
+		if (!organisation) {
+			throw new Error("Organisation not found");
+		}
+
+
+		//remove group from organisation
+
+		let newGroupList = organisation.groups;
+
+		const indexOfGroup = newGroupList.indexOf(groupId);
+		if (indexOfGroup > -1) { // only splice array when item is found
+			newGroupList.splice(indexOfGroup, 1); // 2nd parameter means remove one item only
+		  }
+
+		//remove organisation from group
+
+		let newOrganisationList = group.organisations;
+
+		const indexOfOrganisation = newOrganisationList.indexOf(organisationId);
+		if (indexOfOrganisation > -1) { // only splice array when item is found
+			newOrganisationList.splice(indexOfOrganisation, 1); // 2nd parameter means remove one item only
+		  }
+
+		// Add the organisation to the group
+		const updatedGroup = await db.group.update({
+			where: { id: groupId },
+			data: {
+				organisations: newOrganisationList,
+			},
+		});
+
+		//add group to organisation
+		const updatedOrganisation = await db.organisation.update({
+			where: { id: organisationId },
+			data: {
+				groups: newGroupList,
+			},
+		});
+
+		revalidatePath(`/dashboard`);
+		return updatedGroup;
+	} catch (error) {
+		console.error("Error while leaving group:", error.message);
+		throw new Error("Error while joining group");
+	}
 };
 
 
 
-export {
-  createGroup,
-  joinGroup,
-  leaveGroup,
-  deleteGroup,
-  
+
+
+const getGroupByJoincode = async (joincode: string) => {
+	try {
+		// Fetch the group by its ID
+		const group = await db.group.findUnique({
+			where: { joincode },
+		});
+
+		if (!group) {
+			return false;
+		}
+
+		// Use Promise.all to wait for all async operations to complete
+		const groupOrganisations = await Promise.all(
+			group.organisations.map(async (organisationId: string) => {
+				let organisation = await getOrganisationByIdWithoutPopulatedEvents(
+					organisationId
+				);
+				return organisation;
+			})
+		);
+
+		return { ...group, groupOrganisations };
+	} catch (error) {
+		console.error("Error while fetching group:", error.message);
+		return false;
+	}
 };
+
+export { createGroup, joinGroup, leaveGroup, getGroupByJoincode };

@@ -11,6 +11,7 @@ import SeeDashboard from "./SeeDashboard";
 
 type Props = {
   organisationInformation: any;
+  currentUser:any;
 };
 
 const Dashboard = (props: Props) => {
@@ -93,7 +94,7 @@ const Dashboard = (props: Props) => {
           </div> */}
 
 
-<SeeDashboard organisationInformation={props.organisationInformation} />
+<SeeDashboard organisationInformation={props.organisationInformation} currentUser={props.currentUser} />
 
         </>
       )}

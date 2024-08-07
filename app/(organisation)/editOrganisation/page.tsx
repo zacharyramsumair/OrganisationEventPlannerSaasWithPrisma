@@ -24,7 +24,7 @@ const EditOrganisation = async (props: Props) => {
 	}
 
 	let organisationInformation = await getOrganisationByIdWithoutPopulatedEvents(
-		currentUser.organisations[0]
+		currentUser.organisations[0].id
 	);
     
 

@@ -97,6 +97,8 @@ const getOrganisationById = async (organisationId: any) => {
 				name: true,
 				description: true,
 				joincode: true,
+				secret: true,
+				adminOrganisationIds: true,
 			},
 		});
 
@@ -112,7 +114,7 @@ const getOrganisationByIdWithoutPopulatedEvents = async (
 ) => {
 	try {
 		const organisation = await db.organisation.findUnique({
-			where: { id: organisationId.id },
+			where: { id: organisationId },
 		});
 
 		if (!organisation) {

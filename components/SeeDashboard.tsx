@@ -9,9 +9,9 @@ import convert24HourTo12Hour from "@/lib/convert24HourTo12Hour";
 import { DeleteEventDialog } from "./DeleteEventDialog";
 import { toast } from "@/components/ui/use-toast";
 
-
 type Props = {
 	organisationInformation: any;
+	currentUser: any;
 };
 
 const SeeDashboard = (props: Props) => {
@@ -31,7 +31,8 @@ const SeeDashboard = (props: Props) => {
 				// alert("URL copied to clipboard");
 				toast({
 					title: "Invite URL copied to clipboard",
-					description: "Share this with others to invite them to your group",
+					description:
+						"Share this with others to invite them to your group",
 				});
 			},
 			(err) => {
@@ -88,8 +89,8 @@ const SeeDashboard = (props: Props) => {
 								{props.organisationInformation.infoForGroups.map(
 									(group: any) => (
 										<Link
-											key={group._id}
-											href={`/group/${group.id}`}
+											key={group.id}
+											href={`/group/${group.joincode}`}
 											passHref
 										>
 											<motion.div
@@ -105,23 +106,31 @@ const SeeDashboard = (props: Props) => {
 														</h3>
 														<p className="text-justify truncate">
 															{group.description?.length > 50
-																? `${group.description.substring(0, 50)}...`
+																? `${group.description.substring(
+																		0,
+																		50
+																  )}...`
 																: group.description}
 														</p>
 													</div>
-													<div className="flex items-center mt-4 md:mt-0">
-														<Button
-															className="ml-4"
-															onClick={(e) => {
-																e.preventDefault();
-																copyToClipboard(
-																	`${window.location.origin}/group/${group.id}?secret=message`
-																);
-															}}
-														>
-															<Copy className="mr-2" /> Copy URL
-														</Button>
-													</div>
+													{group.adminOrganisationIds.includes(
+														props.currentUser?.organisations[0].id
+													) && (
+														<div className="flex items-center mt-4 md:mt-0">
+															<Button
+																className="ml-4"
+																onClick={(e) => {
+																	e.preventDefault();
+																	copyToClipboard(
+																		`${window.location.origin}/group/${group.joincode}?secret=${group.secret}`
+																	);
+																}}
+															>
+																<Copy className="mr-2" /> Copy
+																URL
+															</Button>
+														</div>
+													)}
 												</div>
 											</motion.div>
 										</Link>
@@ -167,7 +176,10 @@ const SeeDashboard = (props: Props) => {
 													</h3>
 													<p className="text-justify truncate">
 														{eve.description?.length > 50
-															? `${eve.description.substring(0, 50)}...`
+															? `${eve.description.substring(
+																	0,
+																	50
+															  )}...`
 															: eve.description}
 													</p>
 													<p className="text-gray-500 flex items-center mt-2">

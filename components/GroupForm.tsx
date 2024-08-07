@@ -70,9 +70,9 @@ const GroupForm = ({ currentUser }: Props) => {
 
     let formData = { ...data, adminOrganisationId: currentUser.organisations[0].id };
 
-    await createGroup(formData);
+    let newGroup=await createGroup(formData);
 
-    router.push("/dashboard");
+    router.push(`/group/${newGroup.id}`);
   }
 
   return (

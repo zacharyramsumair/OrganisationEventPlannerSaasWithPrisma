@@ -37,7 +37,7 @@ const dashboard = async (props: Props) => {
   return (
     <div>
       
-      <Dashboard organisationInformation={organisationInformation}/>
+      <Dashboard organisationInformation={organisationInformation} currentUser={currentUser} />
     </div>
   )
 }

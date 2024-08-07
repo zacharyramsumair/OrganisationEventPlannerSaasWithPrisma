@@ -1,8 +1,7 @@
-Update 1
-• Individual calendar
-
-
 Update 2
-• Groups like WhatsApp with admin
-• Manual add and link
+• leave group (admin cannot leave group), frontend code (done)
+• delele organisation from group
 • Group calendar
+• make admin (admin could leave group but must leave another admin, if last person leaves group, delete the group)
+• make dark theme look better
+• 
