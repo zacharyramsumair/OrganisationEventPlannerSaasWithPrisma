@@ -79,7 +79,6 @@ const joinGroup = async (groupId: string, organisationId: string) => {
 			throw new Error("Group not found");
 		}
 
-
 		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId },
 		});
@@ -87,8 +86,6 @@ const joinGroup = async (groupId: string, organisationId: string) => {
 		if (!organisation) {
 			throw new Error("Organisation not found");
 		}
-
-
 
 		// Add the organisation to the group
 		const updatedGroup = await db.group.update({
@@ -106,7 +103,7 @@ const joinGroup = async (groupId: string, organisationId: string) => {
 			},
 		});
 
-		revalidatePath(`/group/${groupId}`);
+		revalidatePath(`/group/${group.joincode}`);
 		return updatedGroup;
 	} catch (error) {
 		console.error("Error while joining group:", error.message);
@@ -124,7 +121,6 @@ const leaveGroup = async (groupId: string, organisationId: string) => {
 			throw new Error("Group not found");
 		}
 
-
 		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId },
 		});
@@ -133,24 +129,25 @@ const leaveGroup = async (groupId: string, organisationId: string) => {
 			throw new Error("Organisation not found");
 		}
 
-
 		//remove group from organisation
 
 		let newGroupList = organisation.groups;
 
 		const indexOfGroup = newGroupList.indexOf(groupId);
-		if (indexOfGroup > -1) { // only splice array when item is found
+		if (indexOfGroup > -1) {
+			// only splice array when item is found
 			newGroupList.splice(indexOfGroup, 1); // 2nd parameter means remove one item only
-		  }
+		}
 
 		//remove organisation from group
 
 		let newOrganisationList = group.organisations;
 
 		const indexOfOrganisation = newOrganisationList.indexOf(organisationId);
-		if (indexOfOrganisation > -1) { // only splice array when item is found
+		if (indexOfOrganisation > -1) {
+			// only splice array when item is found
 			newOrganisationList.splice(indexOfOrganisation, 1); // 2nd parameter means remove one item only
-		  }
+		}
 
 		// Add the organisation to the group
 		const updatedGroup = await db.group.update({
@@ -176,24 +173,40 @@ const leaveGroup = async (groupId: string, organisationId: string) => {
 	}
 };
 
-
-const removeOrganisationFromGroup = async (currentUser:any,groupId: string, organisationId: string) => {
+const removeOrganisationFromGroup = async (
+	currentUser: any,
+	groupId: string,
+	organisationId: string
+) => {
 	try {
+		console.log("here 13")
+
 		const group = await db.group.findUnique({
 			where: { id: groupId },
 		});
-		
+
+
+		console.log("here 14")
+
 		if (!group) {
 			throw new Error("Group not found");
 		}
-		
+
+		console.log("here 11")
+
 		//check if user is admin of this group
 
+		if (
+			!group.adminOrganisationIds.includes(
+				currentUser.organisations[0].id
+			)
+		) {
+			console.log("here 10")
 
+			throw new Error("Organisation not a group admin");
+		}
 
-
-
-		
+		console.log("here 1")
 
 		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId },
@@ -204,23 +217,29 @@ const removeOrganisationFromGroup = async (currentUser:any,groupId: string, orga
 		}
 
 
+		console.log("here 2")
 		//remove group from organisation
 
 		let newGroupList = organisation.groups;
 
 		const indexOfGroup = newGroupList.indexOf(groupId);
-		if (indexOfGroup > -1) { // only splice array when item is found
+		if (indexOfGroup > -1) {
+			// only splice array when item is found
 			newGroupList.splice(indexOfGroup, 1); // 2nd parameter means remove one item only
-		  }
+		}
+
+		console.log("here 3")
 
 		//remove organisation from group
 
 		let newOrganisationList = group.organisations;
 
 		const indexOfOrganisation = newOrganisationList.indexOf(organisationId);
-		if (indexOfOrganisation > -1) { // only splice array when item is found
+		if (indexOfOrganisation > -1) {
+			// only splice array when item is found
+			console.log("here 4")
 			newOrganisationList.splice(indexOfOrganisation, 1); // 2nd parameter means remove one item only
-		  }
+		}
 
 		// Add the organisation to the group
 		const updatedGroup = await db.group.update({
@@ -230,6 +249,7 @@ const removeOrganisationFromGroup = async (currentUser:any,groupId: string, orga
 			},
 		});
 
+		console.log("here 5")
 		//add group to organisation
 		const updatedOrganisation = await db.organisation.update({
 			where: { id: organisationId },
@@ -238,17 +258,16 @@ const removeOrganisationFromGroup = async (currentUser:any,groupId: string, orga
 			},
 		});
 
-		revalidatePath(`/dashboard`);
+		console.log("here 6")
+
+		revalidatePath(`/group/${group.joincode}`);
 		return updatedGroup;
 	} catch (error) {
-		console.error("Error while leaving group:", error.message);
-		throw new Error("Error while joining group");
+		console.log("here 7")
+		console.error("Error while removing organisation from  group:", error.message);
+		throw new Error("Error while removing organisation from group");
 	}
 };
-
-
-
-
 
 const getGroupByJoincode = async (joincode: string) => {
 	try {
@@ -278,4 +297,4 @@ const getGroupByJoincode = async (joincode: string) => {
 	}
 };
 
-export { createGroup, joinGroup, leaveGroup, getGroupByJoincode };
+export { createGroup, joinGroup, leaveGroup, getGroupByJoincode,removeOrganisationFromGroup };
