@@ -39,25 +39,25 @@ export function EventListTable({ events }: any) {
                 </TableCell>
                 <TableCell className="text-left hidden sm:table-cell">
                   <div className="flex items-center ">
-                    <User className="flex-shrink-0 h-5 w-5 text-primary" />
+                    <User className="flex-shrink-0 h-5 w-5 text-primary mr-2" />
                     <span>{event.host}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-left hidden md:table-cell">
                   <div className="flex items-center ">
-                    <MapPin className="flex-shrink-0 h-5 w-5 text-primary" />
+                    <MapPin className="flex-shrink-0 h-5 w-5 text-primary mr-2" />
                     <span>{event.location || "TBA"}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-left">
                   <div className="flex items-center ">
-                    <Calendar className="flex-shrink-0 h-5 w-5 text-primary hidden md:block" />
+                    <Calendar className="flex-shrink-0 h-5 w-5 text-primary hidden md:block mr-2" />
                     <span>{format(new Date(event.date), "EEEE do MMMM, yyyy")}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-left">
                   <div className="flex items-center ">
-                    <Clock className="flex-shrink-0 h-5 w-5 text-primary hidden md:block" />
+                    <Clock className="flex-shrink-0 h-5 w-5 text-primary hidden md:block mr-2" />
                     <span>{convert24HourTo12Hour(event.startTime)} - {convert24HourTo12Hour(event.endTime)}</span>
                   </div>
                 </TableCell>

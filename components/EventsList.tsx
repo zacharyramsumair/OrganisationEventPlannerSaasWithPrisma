@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Importing Chevron icons
 import { toast } from "@/components/ui/use-toast";
 import { EventListTable } from "./EventListTable";
-import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation, getAllEventsForTheYearForGroup } from "@/actions/event";
+import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation,  } from "@/actions/event";
+import { getAllEventsForGroupForYear } from "@/actions/group";
+
 
 interface Event {
   _id: string;
@@ -21,10 +23,10 @@ interface Event {
 
 interface EventsListProps {
   organisationUsername?: string;
-  groupId?: string;
+  groupJoincode?: string;
 }
 
-const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupId }) => {
+const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoincode }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
@@ -34,13 +36,13 @@ const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupId }
       let fetchedEvents;
       if (organisationUsername) {
         fetchedEvents = await getAllEventsForTheYearForOrganisation(year, organisationUsername);
-      } else if (groupId) {
-        fetchedEvents = await getAllEventsForTheYearForGroup(year, groupId);
+      } else if (groupJoincode) {
+        fetchedEvents = await getAllEventsForGroupForYear(year, groupJoincode);
       } else {
         fetchedEvents = await getAllEventsForTheYear(year);
       }
 
-      const filteredEvents: any = fetchedEvents.filter(event => new Date(event.date).getMonth() + 1 === month);
+      const filteredEvents: any = fetchedEvents.filter((event:any) => new Date(event.date).getMonth() + 1 === month);
       setEvents(filteredEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -71,7 +73,7 @@ const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupId }
 
   useEffect(() => {
     fetchEventsForMonth(currentYear, currentMonth);
-  }, [currentYear, currentMonth, organisationUsername, groupId]);
+  }, [currentYear, currentMonth, organisationUsername, groupJoincode]);
 
   return (
     <div className="container mx-auto p-4">

@@ -179,34 +179,31 @@ const removeOrganisationFromGroup = async (
 	organisationId: string
 ) => {
 	try {
-		console.log("here 13")
+		console.log("here 13");
 
 		const group = await db.group.findUnique({
 			where: { id: groupId },
 		});
 
-
-		console.log("here 14")
+		console.log("here 14");
 
 		if (!group) {
 			throw new Error("Group not found");
 		}
 
-		console.log("here 11")
+		console.log("here 11");
 
 		//check if user is admin of this group
 
 		if (
-			!group.adminOrganisationIds.includes(
-				currentUser.organisations[0].id
-			)
+			!group.adminOrganisationIds.includes(currentUser.organisations[0].id)
 		) {
-			console.log("here 10")
+			console.log("here 10");
 
 			throw new Error("Organisation not a group admin");
 		}
 
-		console.log("here 1")
+		console.log("here 1");
 
 		const organisation = await db.organisation.findUnique({
 			where: { id: organisationId },
@@ -216,8 +213,7 @@ const removeOrganisationFromGroup = async (
 			throw new Error("Organisation not found");
 		}
 
-
-		console.log("here 2")
+		console.log("here 2");
 		//remove group from organisation
 
 		let newGroupList = organisation.groups;
@@ -228,7 +224,7 @@ const removeOrganisationFromGroup = async (
 			newGroupList.splice(indexOfGroup, 1); // 2nd parameter means remove one item only
 		}
 
-		console.log("here 3")
+		console.log("here 3");
 
 		//remove organisation from group
 
@@ -237,7 +233,7 @@ const removeOrganisationFromGroup = async (
 		const indexOfOrganisation = newOrganisationList.indexOf(organisationId);
 		if (indexOfOrganisation > -1) {
 			// only splice array when item is found
-			console.log("here 4")
+			console.log("here 4");
 			newOrganisationList.splice(indexOfOrganisation, 1); // 2nd parameter means remove one item only
 		}
 
@@ -249,7 +245,7 @@ const removeOrganisationFromGroup = async (
 			},
 		});
 
-		console.log("here 5")
+		console.log("here 5");
 		//add group to organisation
 		const updatedOrganisation = await db.organisation.update({
 			where: { id: organisationId },
@@ -258,13 +254,16 @@ const removeOrganisationFromGroup = async (
 			},
 		});
 
-		console.log("here 6")
+		console.log("here 6");
 
 		revalidatePath(`/group/${group.joincode}`);
 		return updatedGroup;
 	} catch (error) {
-		console.log("here 7")
-		console.error("Error while removing organisation from  group:", error.message);
+		console.log("here 7");
+		console.error(
+			"Error while removing organisation from  group:",
+			error.message
+		);
 		throw new Error("Error while removing organisation from group");
 	}
 };
@@ -297,4 +296,58 @@ const getGroupByJoincode = async (joincode: string) => {
 	}
 };
 
-export { createGroup, joinGroup, leaveGroup, getGroupByJoincode,removeOrganisationFromGroup };
+const getAllEventsForGroupForYear = async (year: number, joincode: string) => {
+	try {
+	  const group = await db.group.findUnique({
+		where: { joincode },
+	  });
+  
+	  if (!group) {
+		return false;
+	  }
+  
+	  let groupEvents: any = [];
+  
+	  const organisationPromises = group.organisations.map(async (organisationId) => {
+		const organisation = await db.organisation.findUnique({
+		  where: { id: organisationId },
+		  include: {
+			events: {
+			  orderBy: { updatedAt: "desc" },
+			},
+		  },
+		});
+  
+		if (!organisation) {
+		  throw new Error("Organisation not found");
+		}
+  
+		groupEvents.push(...organisation.events);
+	  });
+  
+	  // Wait for all organisationPromises to resolve
+	  await Promise.all(organisationPromises);
+  
+	  console.log("group events 2", groupEvents);
+  
+	  const filteredEvents = groupEvents.filter((event: any) => {
+		const eventDate = new Date(event.date);
+		return eventDate.getFullYear() === year;
+	  });
+  
+	  return filteredEvents;
+	} catch (error) {
+	  console.error("Error while fetching group events:", error.message);
+	  return false;
+	}
+  };
+  
+
+export {
+	createGroup,
+	joinGroup,
+	leaveGroup,
+	getGroupByJoincode,
+	removeOrganisationFromGroup,
+	getAllEventsForGroupForYear
+};

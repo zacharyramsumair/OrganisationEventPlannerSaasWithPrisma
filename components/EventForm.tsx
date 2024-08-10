@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/use-toast";
 
 import { DatePicker } from "./ui/date-picker";
 import TimePicker from "./TimePicker";
+import SelectGroupCombobox from "./SelectGroupCombobox"
 import { getAllEventsForSpecificDate, createEvent} from "@/actions/event";
 
 type Props = {
@@ -203,6 +204,18 @@ const EventForm = ({ currentUser }: Props) => {
                             </FormLabel>
                             <div className="mt-2">
                                 <DatePicker date={date} setDate={setDate} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <FormLabel >
+                                <span className="flex items-center">
+                                    
+                                    Check for clashes with other events 
+                                </span>
+                            </FormLabel>
+                            <div className="mt-2">
+                                {/* <SelectGroupCombobox/> */}
                             </div>
                         </div>
 

@@ -9,10 +9,10 @@ import { Button } from './ui/button';
 
 interface SeeEventsProps {
   organisationUsername?: string;
-  groupId?: string;
+  groupJoincode?: string;
 }
 
-const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) => {
+const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupJoincode }) => {
   const [view, setView] = useState<'calendar' | 'list'>('calendar');
 
   const switchToCalendarView = () => {
@@ -22,6 +22,9 @@ const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) 
   const switchToListView = () => {
     setView('list');
   };
+
+  console.log("groupjoincode", groupJoincode);
+  console.log("organisationusername", organisationUsername);
 
   return (
     <>
@@ -47,7 +50,7 @@ const SeeEvents: React.FC<SeeEventsProps> = ({ organisationUsername, groupId }) 
         </motion.div>
       </div>
       <div className='mt-4'>
-        {view === 'calendar' ? <ShowCalendar organisationUsername={organisationUsername} groupId={groupId} /> : <EventsList organisationUsername={organisationUsername} groupId={groupId} />}
+        {view === 'calendar' ? <ShowCalendar organisationUsername={organisationUsername} groupJoincode={groupJoincode} /> : <EventsList organisationUsername={organisationUsername} groupJoincode={groupJoincode} />}
       </div>
     </>
   );

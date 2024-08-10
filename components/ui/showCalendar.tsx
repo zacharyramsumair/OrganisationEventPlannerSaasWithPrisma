@@ -7,11 +7,12 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { EventCard } from "../EventCard";
-import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation, getAllEventsForTheYearForGroup } from "@/actions/event";
+import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation } from "@/actions/event";
+import { getAllEventsForGroupForYear } from "@/actions/group";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   organisationUsername?: string;
-  groupId?: string;
+  groupJoincode?: string;
 };
 
 function ShowCalendar({
@@ -19,7 +20,7 @@ function ShowCalendar({
   classNames,
   showOutsideDays = true,
   organisationUsername,
-  groupId,
+  groupJoincode,
   ...props
 }: CalendarProps) {
   const [eventDates, setEventDates] = useState([]);
@@ -32,14 +33,20 @@ function ShowCalendar({
       try {
         let events;
         if (organisationUsername) {
+          console.log("organisationusername here");
+
           events = await getAllEventsForTheYearForOrganisation(currentYear, organisationUsername);
-        } else if (groupId) {
-          events = await getAllEventsForTheYearForGroup(currentYear, groupId);
+        } else if (groupJoincode) {
+          console.log("groupjoincode");
+
+          events = await getAllEventsForGroupForYear(currentYear, groupJoincode);
         } else {
           events = await getAllEventsForTheYear(currentYear);
         }
+
+        console.log("events", events);
         
-        const parsedEvents:any = events.map(event => ({
+        const parsedEvents:any = events.map((event:any) => ({
           ...event,
           date: new Date(event.date)
         }));
@@ -54,7 +61,7 @@ function ShowCalendar({
     };
 
     fetchEvents();
-  }, [currentYear, organisationUsername, groupId]);
+  }, [currentYear, organisationUsername, groupJoincode]);
 
   const isEventDate = (date: Date) =>
     eventDates.some(
@@ -82,6 +89,7 @@ function ShowCalendar({
       setSelectedEvents(events);
     };
 
+    console.log("event dat", eventDates);
     return (
         // this is the squares when there is an event
       <motion.div
