@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion"; // Import motion from Framer Motion
-import { Calendar, Clock, MapPin, AlertCircle } from 'lucide-react'; // Lucide icons
+import { motion } from "framer-motion";
+import { Calendar, Clock, MapPin, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -17,14 +17,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-
 import { DatePicker } from "./ui/date-picker";
 import TimePicker from "./TimePicker";
-import SelectGroupCombobox from "./SelectGroupCombobox"
 import { getAllEventsForSpecificDate, createEvent} from "@/actions/event";
+import { SelectGroupCombobox } from "./SelectGroupCombobox";
 
 type Props = {
-    currentUser: any
+    currentUser: any,
+    groupsForCombobox: any
 };
 
 const FormSchema = z.object({
@@ -46,12 +46,14 @@ const FormSchema = z.object({
         }),
 });
 
-const EventForm = ({ currentUser }: Props) => {
+const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
     const [date, setDate] = useState(null);
     const [occupied, setOccupied] = useState([]);
     const [isTimePickerEnabled, setIsTimePickerEnabled] = useState(false);
+    const [groupValue, setGroupValue] = useState("#$%none");
+
     const router = useRouter();
 
     useEffect(() => {
@@ -60,14 +62,14 @@ const EventForm = ({ currentUser }: Props) => {
         setEndTime(null);
 
         if (date) {
-            fetchOccupiedTimes(date);
+            fetchOccupiedTimes(date, groupValue);
         }
-    }, [date]);
+    }, [date, groupValue]); // Trigger useEffect when either date or groupValue changes
 
-    const fetchOccupiedTimes = async (selectedDate:any) => {
+    const fetchOccupiedTimes = async (selectedDate: any, group: any) => {
         try {
-            let events:any = await getAllEventsForSpecificDate(selectedDate);
-            let occupiedTimes = events.map((event:any) => ({
+            const events: any = await getAllEventsForSpecificDate(selectedDate, group, currentUser);
+            let occupiedTimes = events.map((event: any) => ({
                 startTime: event.startTime,
                 endTime: event.endTime
             }));
@@ -76,7 +78,7 @@ const EventForm = ({ currentUser }: Props) => {
                 occupiedTimes = [{
                     startTime: null,
                     endTime: null
-                }]
+                }];
             }
 
             setOccupied(occupiedTimes);
@@ -85,6 +87,11 @@ const EventForm = ({ currentUser }: Props) => {
             setOccupied([]);
         }
     };
+
+    const changeValueTotalFunction = async (value: any) => {
+        setGroupValue(value);
+        fetchOccupiedTimes(date, groupValue);
+    }
 
     if (currentUser.organisations.length === 0) {
         toast({
@@ -110,7 +117,7 @@ const EventForm = ({ currentUser }: Props) => {
                 description: "Please select a date, start and end time"
             });
         } else {
-            let formData = { ...data, date, startTime, endTime, organisation: currentUser.organisations[0].id };
+            const formData = { ...data, date, startTime, endTime, organisation: currentUser.organisations[0].id };
 
             await createEvent(formData);
             router.push("/dashboard");
@@ -119,7 +126,6 @@ const EventForm = ({ currentUser }: Props) => {
                 title: "New Event Created",
                 description: "If you don't see it, refresh the page to see it on your dashboard"
             });
-            // router.push("/dashboard");
         }
     }
 
@@ -210,12 +216,11 @@ const EventForm = ({ currentUser }: Props) => {
                         <div>
                             <FormLabel >
                                 <span className="flex items-center">
-                                    
                                     Check for clashes with other events 
                                 </span>
                             </FormLabel>
                             <div className="mt-2">
-                                {/* <SelectGroupCombobox/> */}
+                                <SelectGroupCombobox value={groupValue} setValue={setGroupValue} changeValueTotalFunction={changeValueTotalFunction} groupsForCombobox={groupsForCombobox} />
                             </div>
                         </div>
 

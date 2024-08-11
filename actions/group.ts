@@ -341,6 +341,46 @@ const getAllEventsForGroupForYear = async (year: number, joincode: string) => {
 	  return false;
 	}
   };
+
+
+
+const getAllGroupsForOrganisation = async ( currentUser: any) => {
+	try {
+	 
+		const organisation = await db.organisation.findUnique({
+			where: { id: currentUser.organisations[0].id },
+		});
+
+		if (!organisation) {
+			throw new Error("Organisation not found");
+		}
+  
+	  let groups: any = [];
+  
+	  const groupPromises = organisation.groups.map(async (groupId) => {
+		const group = await db.group.findUnique({
+		  where: { id: groupId },
+		  select: { name: true,  joincode: true },
+		});
+  
+		if (!group) {
+		  throw new Error("group not found");
+		}
+  
+		groups.push(group);
+	  });
+  
+	  // Wait for all groupPromises to resolve
+	  await Promise.all(groupPromises);
+  
+  
+	  return groups;
+  
+	} catch (error) {
+	  console.error("Error while fetching group events:", error.message);
+	  return false;
+	}
+  };
   
 
 export {
@@ -349,5 +389,6 @@ export {
 	leaveGroup,
 	getGroupByJoincode,
 	removeOrganisationFromGroup,
-	getAllEventsForGroupForYear
+	getAllEventsForGroupForYear,
+	getAllGroupsForOrganisation
 };
