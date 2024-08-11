@@ -61,14 +61,14 @@ const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
         setStartTime(null);
         setEndTime(null);
 
-        if (date) {
+        if (date && date!== null) {
             fetchOccupiedTimes(date, groupValue);
         }
-    }, [date, groupValue]); // Trigger useEffect when either date or groupValue changes
+    }, [date]); // 
 
-    const fetchOccupiedTimes = async (selectedDate: any, group: any) => {
+    const fetchOccupiedTimes = async (selectedDate: any, groupValue: any) => {
         try {
-            const events: any = await getAllEventsForSpecificDate(selectedDate, group, currentUser);
+            const events: any = await getAllEventsForSpecificDate(selectedDate, groupValue, currentUser);
             let occupiedTimes = events.map((event: any) => ({
                 startTime: event.startTime,
                 endTime: event.endTime
@@ -89,8 +89,8 @@ const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
     };
 
     const changeValueTotalFunction = async (value: any) => {
-        setGroupValue(value);
-        fetchOccupiedTimes(date, groupValue);
+        await setGroupValue(value);
+        fetchOccupiedTimes(date, value);
     }
 
     if (currentUser.organisations.length === 0) {

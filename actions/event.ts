@@ -88,40 +88,56 @@ const getAllEventsForSpecificDate = async (
 		//#$%none organisation only
 
 		if (groupValue == "#$%none") {
+			console.log("================== none")
 			filteredEvents = filteredEvents.filter((event: any) => {
 				return event.organisationId == currentUser.organisations[0].id;
 			});
 		} else if (groupValue == "#$%allGroups") {
+			console.log(" ==================  all groups ")
+
 			let organisationsToInclude: any = [];
+			console.log("here 1")
 			const organisation = await db.organisation.findUnique({
 				where: { id: currentUser.organisations[0].id },
 			});
+			console.log("here 2")
 			if (!organisation) {
 				throw new Error("Organisation not found");
 			}
+			console.log("here 3")	
 			const groupPromises = organisation.groups.map(async (groupId) => {
 				const group = await db.group.findUnique({
 					where: { id: groupId },
 					select: { organisations: true },
 				});
 
+				console.log("here 4")
 				if (!group) {
 					throw new Error("group not found");
 				}
 
+
+					console.log("here 5")
+					console.log("group organisations", group.organisations)
 				organisationsToInclude.push(...group.organisations);
 			});
-
+			console.log("here 6")
 			// Wait for all groupPromises to resolve
 			await Promise.all(groupPromises);
+
+			console.log("organisationsToInclude", organisationsToInclude);
 			// console.log("organisationsToInclude", organisationsToInclude);
 
 			filteredEvents = filteredEvents.filter((item) =>
 				organisationsToInclude.includes(item.organisationId)
 			);
 		} else if (groupValue == "#$%everyone") {
+			console.log(" ==================  everyone ")
+
 			filteredEvents;
 		}else{
+			console.log(" ==================  specific ")
+
       const group = await db.group.findUnique({
         where: { joincode: groupValue },
         select: { organisations: true },

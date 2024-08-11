@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { editEvent, getAllEventsForSpecificDate } from "@/actions/event";
+import { SelectGroupCombobox } from "./SelectGroupCombobox";
+
 
 
 const FormSchema = z.object({
@@ -39,19 +41,21 @@ const FormSchema = z.object({
     }),
 });
 
-const EditEventForm = ({ currentUser, currentEvent }: any) => {
+const EditEventForm = ({ currentUser, currentEvent,groupsForCombobox }: any) => {
     const [startTime, setStartTime] = useState(currentEvent.startTime);
     const [endTime, setEndTime] = useState(currentEvent.endTime);
     const [date, setDate] = useState(currentEvent.date);
     const [occupied, setOccupied] = useState([]);
     const [isTimePickerEnabled, setIsTimePickerEnabled] = useState(false);
+    const [groupValue, setGroupValue] = useState("#$%none");
+
     const router = useRouter();
 
   
 
-    const fetchOccupiedTimes = async (selectedDate: string) => {
+    const fetchOccupiedTimes = async (selectedDate: any, group: any) => {
         try {
-            const events = await getAllEventsForSpecificDate(selectedDate);
+            const events = await getAllEventsForSpecificDate(selectedDate, group, currentUser);
             const filteredEvents = events.filter(event => event.id !== currentEvent.id);
             const occupiedTimes: any = filteredEvents.map((event: any) => ({
                 startTime: event.startTime,
@@ -66,9 +70,14 @@ const EditEventForm = ({ currentUser, currentEvent }: any) => {
     useEffect(() => {
         setIsTimePickerEnabled(date !== null);
         if (date) {
-            fetchOccupiedTimes(date);
+            fetchOccupiedTimes(date, groupValue);
         }
-    }, [date]);
+    }, [date, groupValue]); // Trigger useEffect when either date or groupValue changes
+
+    const changeValueTotalFunction = async (value: any) => {
+        setGroupValue(value);
+        fetchOccupiedTimes(date, value);
+    }
 
     if (currentUser.organisations.length === 0) {
         toast({
@@ -189,6 +198,17 @@ const EditEventForm = ({ currentUser, currentEvent }: any) => {
                             </FormLabel>
                             <div className="mt-2">
                                 <DatePicker date={date} setDate={setDate} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <FormLabel >
+                                <span className="flex items-center">
+                                    Check for clashes with other events 
+                                </span>
+                            </FormLabel>
+                            <div className="mt-2">
+                                <SelectGroupCombobox value={groupValue} setValue={setGroupValue} changeValueTotalFunction={changeValueTotalFunction} groupsForCombobox={groupsForCombobox} />
                             </div>
                         </div>
 

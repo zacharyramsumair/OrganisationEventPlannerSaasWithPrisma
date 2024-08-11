@@ -5,6 +5,8 @@ import { getEventById } from "@/actions/event";
 import { getUserByEmail } from "@/actions/auth";
 import { auth } from "@/auth";
 import EditEventForm from "@/components/EditEventForm";
+import { getAllGroupsForOrganisation } from "@/actions/group";
+
 
 const EditEventPage = async ({ params }: { params: { id: string } }) => {
 	const { id } = params;
@@ -37,11 +39,34 @@ const EditEventPage = async ({ params }: { params: { id: string } }) => {
 	}
 
 
+	let groups = await getAllGroupsForOrganisation(currentUser);
+
+	const transformedArray = groups.map((item: any) => ({
+		value: item.joincode,
+		label: item.name,
+	}));
+
+
+	let groupsForCombobox = [
+		{
+			value: "#$%none",
+			label: "Your Organisation Only",
+		},
+		{
+			value: "#$%allGroups",
+			label: "All My Groups",
+		},
+		{
+			value: "#$%everyone",
+			label: "Everyone",
+		},
+		...transformedArray,
+	];
 	//   const { currentUser, currentEvent } = data;
 
 	return (
 		<div>
-			<EditEventForm currentEvent={currentEvent} currentUser={currentUser} />
+			<EditEventForm currentEvent={currentEvent} currentUser={currentUser} groupsForCombobox={groupsForCombobox} />
 		</div>
 	);
 };
