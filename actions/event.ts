@@ -72,56 +72,66 @@ const getAllEventsForSpecificDate = async (
 ) => {
 	try {
 		// Parse the provided date string
+		// const targetDate = new Date(date);
+
+		// // Fetch all events and filter by the specified date
+		// let events = await db.event.findMany();
+		// let filteredEvents = events.filter((event) => {
+		// 	let eventDate = new Date(event.date);
+		// 	return (
+		// 		eventDate.getFullYear() === targetDate.getFullYear() &&
+		// 		eventDate.getMonth() === targetDate.getMonth() &&
+		// 		eventDate.getDate() === targetDate.getDate()
+		// 	);
+		// });
+
 		const targetDate = new Date(date);
 
-		// Fetch all events and filter by the specified date
-		let events = await db.event.findMany();
-		let filteredEvents = events.filter((event) => {
-			let eventDate = new Date(event.date);
-			return (
-				eventDate.getFullYear() === targetDate.getFullYear() &&
-				eventDate.getMonth() === targetDate.getMonth() &&
-				eventDate.getDate() === targetDate.getDate()
-			);
+		let filteredEvents = await db.event.findMany({
+			where: {
+				date: {
+					gte: new Date(targetDate.setHours(0, 0, 0, 0)), // Start of the day
+					lt: new Date(targetDate.setHours(23, 59, 59, 999)), // End of the day
+				},
+			},
 		});
 
 		//#$%none organisation only
 
 		if (groupValue == "#$%none") {
-			console.log("================== none")
+			console.log("================== none");
 			filteredEvents = filteredEvents.filter((event: any) => {
 				return event.organisationId == currentUser.organisations[0].id;
 			});
 		} else if (groupValue == "#$%allGroups") {
-			console.log(" ==================  all groups ")
+			console.log(" ==================  all groups ");
 
 			let organisationsToInclude: any = [];
-			console.log("here 1")
+			console.log("here 1");
 			const organisation = await db.organisation.findUnique({
 				where: { id: currentUser.organisations[0].id },
 			});
-			console.log("here 2")
+			console.log("here 2");
 			if (!organisation) {
 				throw new Error("Organisation not found");
 			}
-			console.log("here 3")	
+			console.log("here 3");
 			const groupPromises = organisation.groups.map(async (groupId) => {
 				const group = await db.group.findUnique({
 					where: { id: groupId },
 					select: { organisations: true },
 				});
 
-				console.log("here 4")
+				console.log("here 4");
 				if (!group) {
 					throw new Error("group not found");
 				}
 
-
-					console.log("here 5")
-					console.log("group organisations", group.organisations)
+				console.log("here 5");
+				console.log("group organisations", group.organisations);
 				organisationsToInclude.push(...group.organisations);
 			});
-			console.log("here 6")
+			console.log("here 6");
 			// Wait for all groupPromises to resolve
 			await Promise.all(groupPromises);
 
@@ -132,25 +142,25 @@ const getAllEventsForSpecificDate = async (
 				organisationsToInclude.includes(item.organisationId)
 			);
 		} else if (groupValue == "#$%everyone") {
-			console.log(" ==================  everyone ")
+			console.log(" ==================  everyone ");
 
 			filteredEvents;
-		}else{
-			console.log(" ==================  specific ")
+		} else {
+			console.log(" ==================  specific ");
 
-      const group = await db.group.findUnique({
-        where: { joincode: groupValue },
-        select: { organisations: true },
-      });
+			const group = await db.group.findUnique({
+				where: { joincode: groupValue },
+				select: { organisations: true },
+			});
 
-      if (!group) {
-        throw new Error("group not found");
-      }
+			if (!group) {
+				throw new Error("group not found");
+			}
 
-      filteredEvents = filteredEvents.filter((item) =>
+			filteredEvents = filteredEvents.filter((item) =>
 				group.organisations.includes(item.organisationId)
 			);
-    }
+		}
 
 		// #$%allGroups all groups
 		// #$%everyone everyone
@@ -161,7 +171,6 @@ const getAllEventsForSpecificDate = async (
 		//     return event.groupId === groupValue;
 		//   });
 		// }
-
 
 		return filteredEvents;
 	} catch (error) {
@@ -213,29 +222,6 @@ const getAllEventsForTheYearForOrganisation = async (
 		console.log(error.message);
 		throw new Error("Error while fetching events for organisation");
 	}
-};
-
-const getAllEventsForTheYearForGroup = async (
-	year: number,
-	groupId: string
-) => {
-	return [];
-	// try {
-	//   // Fetch all events for the given group
-	//   const events = await db.event.findMany({
-	//     where: { groupId },
-	//   });
-
-	//   const filteredEvents = events.filter((event) => {
-	//     const eventDate = new Date(event.date);
-	//     return eventDate.getFullYear() === year;
-	//   });
-
-	//   return filteredEvents;
-	// } catch (error: Error) {
-	//   console.log(error.message);
-	//   throw new Error("Error while fetching events for group");
-	// }
 };
 
 const getEventById = async (eventId: string) => {
@@ -347,11 +333,113 @@ const getOrganisationByUsername = async (organisationUsername: string) => {
 	}
 };
 
+const getAllEventsForGroupValueForYear = async (
+	year: any,
+	joincode: string,
+	currentUser: any
+) => {
+	try {
+		
+
+		let filteredEvents = await db.event.findMany({
+		  where: {
+			date: {
+			  gte: new Date(`${year}-01-01T00:00:00.000Z`), // Start of the specified year
+			  lt: new Date(`${year + 1}-01-01T00:00:00.000Z`),  // Start of the next year
+			},
+		  },
+		});
+		
+
+		//#$%none organisation only
+		if (joincode == "#$%everyone" || !currentUser) {
+			console.log(" ==================  everyone ");
+
+			filteredEvents;
+		}
+
+		else if (joincode == "#$%none") {
+			console.log("================== none");
+			filteredEvents = filteredEvents.filter((event: any) => {
+				return event.organisationId == currentUser.organisations[0].id;
+			});
+		} else if (joincode == "#$%allGroups") {
+			console.log(" ==================  all groups ");
+
+			let organisationsToInclude: any = [];
+			console.log("here 1");
+			const organisation = await db.organisation.findUnique({
+				where: { id: currentUser.organisations[0].id },
+			});
+			console.log("here 2");
+			if (!organisation) {
+				throw new Error("Organisation not found");
+			}
+			console.log("here 3");
+			const groupPromises = organisation.groups.map(async (groupId) => {
+				const group = await db.group.findUnique({
+					where: { id: groupId },
+					select: { organisations: true },
+				});
+
+				console.log("here 4");
+				if (!group) {
+					throw new Error("group not found");
+				}
+
+				console.log("here 5");
+				console.log("group organisations", group.organisations);
+				organisationsToInclude.push(...group.organisations);
+			});
+			console.log("here 6");
+			// Wait for all groupPromises to resolve
+			await Promise.all(groupPromises);
+
+			console.log("organisationsToInclude", organisationsToInclude);
+			// console.log("organisationsToInclude", organisationsToInclude);
+
+			filteredEvents = filteredEvents.filter((item) =>
+				organisationsToInclude.includes(item.organisationId)
+			);
+		}  else {
+			console.log(" ==================  specific ");
+
+			const group = await db.group.findUnique({
+				where: { joincode },
+				select: { organisations: true },
+			});
+
+			if (!group) {
+				throw new Error("group not found");
+			}
+
+			filteredEvents = filteredEvents.filter((item) =>
+				group.organisations.includes(item.organisationId)
+			);
+		}
+
+		// #$%allGroups all groups
+		// #$%everyone everyone
+		// not any of that then its a joincode check for that and check if the event organisation is in the group
+
+		// if(groupValue !== "#$%none"){
+		//   filteredEvents = filteredEvents.filter((event:any) => {
+		//     return event.groupId === groupValue;
+		//   });
+		// }
+
+		return filteredEvents;
+	} catch (error) {
+		console.log(error.message);
+		throw new Error("Error while fetching events");
+	}
+};
+
 export {
 	createEvent,
 	getAllEventsForTheYear,
 	getAllEventsForTheYearForOrganisation,
-	getAllEventsForTheYearForGroup,
+	getAllEventsForGroupValueForYear,
 	getAllEventsForSpecificDate,
 	getAllEventsForOrganisation,
 	getEventById,

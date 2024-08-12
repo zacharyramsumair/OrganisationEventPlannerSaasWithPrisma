@@ -2,9 +2,10 @@ Update 2
 • leave group (admin cannot leave group), frontend code (done)
 • delele organisation from group (done)
 • Group calendar
-
 • alter settings for booking and editing with dropdown
+
 • calendar page alter settings with dropdown
+• add calendar shortcut to dashboard for organisation and for group page
 • make dark theme look better on dashboard
 
 • make admin (admin could leave group but must leave another admin, if last person leaves group, delete the group)

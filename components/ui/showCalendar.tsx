@@ -7,12 +7,15 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { EventCard } from "../EventCard";
-import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation } from "@/actions/event";
+import { getAllEventsForGroupValueForYear, getAllEventsForTheYear, getAllEventsForTheYearForOrganisation } from "@/actions/event";
 import { getAllEventsForGroupForYear } from "@/actions/group";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   organisationUsername?: string;
   groupJoincode?: string;
+  groupValue?: string;
+  currentUser:any;
+
 };
 
 function ShowCalendar({
@@ -21,6 +24,8 @@ function ShowCalendar({
   showOutsideDays = true,
   organisationUsername,
   groupJoincode,
+  groupValue,
+  currentUser,
   ...props
 }: CalendarProps) {
   const [eventDates, setEventDates] = useState([]);
@@ -38,9 +43,17 @@ function ShowCalendar({
           events = await getAllEventsForTheYearForOrganisation(currentYear, organisationUsername);
         } else if (groupJoincode) {
           console.log("groupjoincode");
-
           events = await getAllEventsForGroupForYear(currentYear, groupJoincode);
-        } else {
+
+        } else if(groupValue){
+          console.log("groupValue");
+          events = await getAllEventsForGroupValueForYear(currentYear, groupValue,currentUser);
+
+          // function for getting evnets for year based of your oranisation, everyone, all my groups, and a specfic group
+
+        }
+        
+        else {
           events = await getAllEventsForTheYear(currentYear);
         }
 
@@ -61,7 +74,7 @@ function ShowCalendar({
     };
 
     fetchEvents();
-  }, [currentYear, organisationUsername, groupJoincode]);
+  }, [currentYear, organisationUsername, groupJoincode,groupValue]);
 
   const isEventDate = (date: Date) =>
     eventDates.some(
@@ -89,7 +102,7 @@ function ShowCalendar({
       setSelectedEvents(events);
     };
 
-    console.log("event dat", eventDates);
+    // console.log("event dat", eventDates);
     return (
         // this is the squares when there is an event
       <motion.div

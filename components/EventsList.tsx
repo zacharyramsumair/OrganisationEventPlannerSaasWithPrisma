@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Importing Chevron icons
 import { toast } from "@/components/ui/use-toast";
 import { EventListTable } from "./EventListTable";
-import { getAllEventsForTheYear, getAllEventsForTheYearForOrganisation,  } from "@/actions/event";
+import { getAllEventsForGroupValueForYear,getAllEventsForTheYear, getAllEventsForTheYearForOrganisation,  } from "@/actions/event";
 import { getAllEventsForGroupForYear } from "@/actions/group";
 
 
@@ -24,9 +24,12 @@ interface Event {
 interface EventsListProps {
   organisationUsername?: string;
   groupJoincode?: string;
+  groupValue?: string;
+  currentUser:any;
+
 }
 
-const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoincode }) => {
+const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoincode,groupValue,currentUser }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
@@ -38,7 +41,15 @@ const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoin
         fetchedEvents = await getAllEventsForTheYearForOrganisation(year, organisationUsername);
       } else if (groupJoincode) {
         fetchedEvents = await getAllEventsForGroupForYear(year, groupJoincode);
-      } else {
+      } else if(groupValue){
+        console.log("groupValue");
+        fetchedEvents = await getAllEventsForGroupValueForYear(currentYear, groupValue,currentUser);
+
+        // function for getting evnets for year based of your oranisation, everyone, all my groups, and a specfic group
+
+      }
+      
+      else {
         fetchedEvents = await getAllEventsForTheYear(year);
       }
 
@@ -73,7 +84,7 @@ const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoin
 
   useEffect(() => {
     fetchEventsForMonth(currentYear, currentMonth);
-  }, [currentYear, currentMonth, organisationUsername, groupJoincode]);
+  }, [currentYear, currentMonth, organisationUsername, groupJoincode,groupValue]);
 
   return (
     <div className="container mx-auto p-4">
