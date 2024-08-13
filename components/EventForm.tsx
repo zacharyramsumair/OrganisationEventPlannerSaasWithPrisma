@@ -86,7 +86,7 @@ const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
         if (date && date!== null) {
             fetchOccupiedTimes(date, groupValue);
         }
-    }, [date,fetchOccupiedTimes]); // 
+    }, [date]); // 
 
    
 

@@ -72,7 +72,7 @@ const EditEventForm = ({ currentUser, currentEvent,groupsForCombobox }: any) => 
         if (date) {
             fetchOccupiedTimes(date, groupValue);
         }
-    }, [date, groupValue,fetchOccupiedTimes]); // Trigger useEffect when either date or groupValue changes
+    }, [date, groupValue]); // Trigger useEffect when either date or groupValue changes
 
     const changeValueTotalFunction = async (value: any) => {
         setGroupValue(value);
