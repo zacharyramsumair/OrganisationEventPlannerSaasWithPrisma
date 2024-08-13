@@ -56,16 +56,6 @@ const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
 
     const router = useRouter();
 
-    useEffect(() => {
-        setIsTimePickerEnabled(date !== null);
-        setStartTime(null);
-        setEndTime(null);
-
-        if (date && date!== null) {
-            fetchOccupiedTimes(date, groupValue);
-        }
-    }, [date]); // 
-
     const fetchOccupiedTimes = async (selectedDate: any, groupValue: any) => {
         try {
             const events: any = await getAllEventsForSpecificDate(selectedDate, groupValue, currentUser);
@@ -87,6 +77,18 @@ const EventForm = ({ currentUser, groupsForCombobox }: Props) => {
             setOccupied([]);
         }
     };
+
+    useEffect(() => {
+        setIsTimePickerEnabled(date !== null);
+        setStartTime(null);
+        setEndTime(null);
+
+        if (date && date!== null) {
+            fetchOccupiedTimes(date, groupValue);
+        }
+    }, [date,fetchOccupiedTimes]); // 
+
+   
 
     const changeValueTotalFunction = async (value: any) => {
         await setGroupValue(value);

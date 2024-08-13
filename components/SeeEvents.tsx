@@ -11,7 +11,7 @@ interface SeeEventsProps {
 	organisationUsername?: string;
 	groupJoincode?: string;
 	groupsForCombobox?: any;
-  currentUser:any;
+  currentUser?:any;
 }
 
 const SeeEvents: React.FC<SeeEventsProps> = ({

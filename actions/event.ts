@@ -43,8 +43,7 @@ const createEvent = async (formData: any) => {
 
 		revalidatePath("/dashboard");
 		return newEvent;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while creating event");
 	}
 };
@@ -59,8 +58,7 @@ const getAllEventsForTheYear = async (year: number) => {
 		});
 
 		return filteredEvents;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while fetching events");
 	}
 };
@@ -173,8 +171,7 @@ const getAllEventsForSpecificDate = async (
 		// }
 
 		return filteredEvents;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while fetching events");
 	}
 };
@@ -187,8 +184,7 @@ const getAllEventsForOrganisation = async (organisationId: string) => {
 		});
 
 		return events;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while fetching events");
 	}
 };
@@ -218,8 +214,7 @@ const getAllEventsForTheYearForOrganisation = async (
 		});
 
 		return filteredEvents;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while fetching events for organisation");
 	}
 };
@@ -237,8 +232,7 @@ const getEventById = async (eventId: string) => {
 		}
 
 		return event;
-	} catch (error) {
-		console.error("Error while fetching event by ID:", error.message);
+} catch (error:any) {		console.error("Error while fetching event by ID:", error.message);
 		throw new Error("Error while fetching event");
 	}
 };
@@ -269,8 +263,7 @@ const editEvent = async (eventId: string, formData: any, currentUser: any) => {
 		revalidatePath("/dashboard");
 
 		return updatedEvent;
-	} catch (error) {
-		console.error("Error while editing event:", error.message);
+} catch (error:any) {		console.error("Error while editing event:", error.message);
 		throw new Error("Error while editing event");
 	}
 };
@@ -305,8 +298,7 @@ const deleteEvent = async (eventId: string) => {
 		revalidatePath("/dashboard");
 
 		return { message: "Event deleted successfully" };
-	} catch (error) {
-		console.error("Error while deleting event:", error.message);
+} catch (error:any) {		console.error("Error while deleting event:", error.message);
 		throw new Error("Error while deleting event");
 	}
 };
@@ -324,8 +316,7 @@ const getOrganisationByUsername = async (organisationUsername: string) => {
 		}
 
 		return organisation;
-	} catch (error) {
-		console.error(
+} catch (error:any) {		console.error(
 			"Error while fetching organisation by username:",
 			error.message
 		);
@@ -429,8 +420,7 @@ const getAllEventsForGroupValueForYear = async (
 		// }
 
 		return filteredEvents;
-	} catch (error) {
-		console.log(error.message);
+} catch (error:any) {		console.log(error.message);
 		throw new Error("Error while fetching events");
 	}
 };

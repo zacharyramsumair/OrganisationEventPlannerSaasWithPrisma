@@ -63,8 +63,7 @@ const createGroup = async (formData: any) => {
 
 		revalidatePath("/dashboard");
 		return newGroup;
-	} catch (error) {
-		console.error("Error while creating group:", error.message);
+} catch (error:any) {		console.error("Error while creating group:", error.message);
 		throw new Error("Error while creating group");
 	}
 };
@@ -105,8 +104,7 @@ const joinGroup = async (groupId: string, organisationId: string) => {
 
 		revalidatePath(`/group/${group.joincode}`);
 		return updatedGroup;
-	} catch (error) {
-		console.error("Error while joining group:", error.message);
+} catch (error:any) {		console.error("Error while joining group:", error.message);
 		throw new Error("Error while joining group");
 	}
 };
@@ -167,8 +165,7 @@ const leaveGroup = async (groupId: string, organisationId: string) => {
 
 		revalidatePath(`/dashboard`);
 		return updatedGroup;
-	} catch (error) {
-		console.error("Error while leaving group:", error.message);
+} catch (error:any) {		console.error("Error while leaving group:", error.message);
 		throw new Error("Error while joining group");
 	}
 };
@@ -258,8 +255,7 @@ const removeOrganisationFromGroup = async (
 
 		revalidatePath(`/group/${group.joincode}`);
 		return updatedGroup;
-	} catch (error) {
-		console.log("here 7");
+} catch (error:any) {		console.log("here 7");
 		console.error(
 			"Error while removing organisation from  group:",
 			error.message
@@ -290,8 +286,7 @@ const getGroupByJoincode = async (joincode: string) => {
 		);
 
 		return { ...group, groupOrganisations };
-	} catch (error) {
-		console.error("Error while fetching group:", error.message);
+} catch (error:any) {		console.error("Error while fetching group:", error.message);
 		return false;
 	}
 };
@@ -336,8 +331,7 @@ const getAllEventsForGroupForYear = async (year: number, joincode: string) => {
 	  });
   
 	  return filteredEvents;
-	} catch (error) {
-	  console.error("Error while fetching group events:", error.message);
+} catch (error:any) {	  console.error("Error while fetching group events:", error.message);
 	  return false;
 	}
   };
@@ -376,8 +370,7 @@ const getAllGroupsForOrganisation = async ( currentUser: any) => {
   
 	  return groups;
   
-	} catch (error) {
-	  console.error("Error while fetching group events:", error.message);
+} catch (error:any) {	  console.error("Error while fetching group events:", error.message);
 	  return false;
 	}
   };

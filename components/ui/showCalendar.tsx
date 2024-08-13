@@ -74,7 +74,7 @@ function ShowCalendar({
     };
 
     fetchEvents();
-  }, [currentYear, organisationUsername, groupJoincode,groupValue]);
+  }, [currentYear, organisationUsername, groupJoincode,groupValue,currentUser]);
 
   const isEventDate = (date: Date) =>
     eventDates.some(

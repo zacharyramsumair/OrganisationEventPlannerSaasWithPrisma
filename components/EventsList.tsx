@@ -84,7 +84,7 @@ const EventsList: React.FC<EventsListProps> = ({ organisationUsername, groupJoin
 
   useEffect(() => {
     fetchEventsForMonth(currentYear, currentMonth);
-  }, [currentYear, currentMonth, organisationUsername, groupJoincode,groupValue]);
+  }, [currentYear, currentMonth, organisationUsername, groupJoincode,groupValue,fetchEventsForMonth]);
 
   return (
     <div className="container mx-auto p-4">
