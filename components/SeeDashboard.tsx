@@ -48,7 +48,7 @@ const SeeDashboard = (props: Props) => {
           onClick={switchToEventView}
           className="mx-2"
         >
-          <Calendar size={24} />
+          <Calendar size={24} /> &nbsp;
           Events
         </Button>
         <Button
@@ -56,7 +56,7 @@ const SeeDashboard = (props: Props) => {
           onClick={switchToGroupView}
           className="mx-2"
         >
-          <Users size={24} />
+          <Users size={24} /> &nbsp;
           Groups
         </Button>
       </div>

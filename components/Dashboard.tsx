@@ -22,8 +22,8 @@ const Dashboard = (props: Props) => {
       {props.organisationInformation && (
         <>
           <div className="mb-6 p-4 border rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-2 text-primary">
-              Organisation: {props.organisationInformation.name}
+            <h2 className="text-2xl font-bold mb-2 text-primary flex items-center">
+              Organisation: {props.organisationInformation.name} &nbsp;<Link href={`/calendar/organisation/@${props.organisationInformation.username}`}><Calendar/></Link> 
             </h2>
             <p className="mb-4">Username: @{props.organisationInformation.username}</p>
             <p className="mb-2 text-justify">

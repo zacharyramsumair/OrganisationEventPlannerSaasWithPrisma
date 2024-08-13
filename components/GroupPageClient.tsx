@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
-import { Copy, Plus, DoorOpen, CircleX } from "lucide-react";
+import { Copy, Plus, DoorOpen, CircleX, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { joinGroup, leaveGroup,removeOrganisationFromGroup } from "@/actions/group";
 import { useRouter } from "next/navigation";
@@ -70,7 +70,7 @@ const GroupPageClient = ({ groupInfo, currentUser }: any) => {
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.4 }}
 			>
-				<p className="text-lg font-semibold mt-2">Group name: {groupInfo.name}</p>
+				<p className="text-lg font-semibold mt-2 flex items-center">Group name: {groupInfo.name} &nbsp;<Link href={`/calendar/group/@${groupInfo.joincode}`} className="text-primary"><Calendar/></Link> </p>
 
 				{groupInfo.description.length > 0 && (
 					<>
