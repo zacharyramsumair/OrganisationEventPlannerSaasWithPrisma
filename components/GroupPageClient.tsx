@@ -72,6 +72,20 @@ const GroupPageClient = ({ groupInfo, currentUser }: any) => {
 			>
 				<p className="text-lg font-semibold mt-2 flex items-center">Group name: {groupInfo.name} &nbsp;<Link href={`/calendar/group/@${groupInfo.joincode}`} className="text-primary"><Calendar/></Link> </p>
 
+				{groupInfo.adminOrganisationIds.includes(currentUser?.organisations[0].id) && (
+                            <Button
+                              className="mt-4"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                copyToClipboard(
+                                  `${window.location.origin}/group/${groupInfo.joincode}?secret=${groupInfo.secret}`
+                                );
+                              }}
+                            >
+                              <Copy className="mr-2" /> Copy URL
+                            </Button>
+                          )}
+						  
 				{groupInfo.description.length > 0 && (
 					<>
 						<p className="text-lg font-semibold mt-2">Group description:</p>
