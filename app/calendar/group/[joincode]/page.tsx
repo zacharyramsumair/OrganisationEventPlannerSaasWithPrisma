@@ -29,7 +29,7 @@ const Page = async ({ params }: { params: { joincode: string } }) => {
     <div className="min-h-screen">
       {hasGroupInfo ? (
         <>
-          <h1 className="text-4xl font-bold text-center mt-4 mb-2">@{groupInfo.name}</h1>
+          <h1 className="text-4xl font-bold text-center mt-4 mb-2">Group: {groupInfo.name}</h1>
           {/* <h2 className="text-2xl font-semibold text-center mb-4 text-gray-500">@{groupInfo.username}</h2> */}
           <SeeEvents groupJoincode={joincode} />
         </>
