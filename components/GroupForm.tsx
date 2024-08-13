@@ -72,7 +72,7 @@ const GroupForm = ({ currentUser }: Props) => {
 
     let newGroup=await createGroup(formData);
 
-    router.push(`/group/${newGroup.id}`);
+    router.push(`/group/${newGroup.joincode}`);
   }
 
   return (
