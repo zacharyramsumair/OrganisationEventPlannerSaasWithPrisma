@@ -4,6 +4,8 @@ import React from "react";
 import { motion } from "framer-motion"; // For animations
 import { Calendar, ChevronRight } from "lucide-react"; // Lucide React icons
 import StarsCanvas from "./StarBackground";
+import { toast } from "@/components/ui/use-toast";
+
 
 function HomePage({ currentUser }: any) {
 	// copied from
@@ -42,7 +44,9 @@ function HomePage({ currentUser }: any) {
 					{!currentUser && (
 						<Link
 							href="/login"
+							onClick={() => toast({title: "Can't get to Login page?", description: "Please clear your cookies for this site and try again."})}
 							className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary hover:bg-primary focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+							
 						>
 							Login to get Started
 							<ChevronRight
