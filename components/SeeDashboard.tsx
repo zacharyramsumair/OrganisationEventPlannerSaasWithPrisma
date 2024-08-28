@@ -115,7 +115,7 @@ const SeeDashboard = (props: Props) => {
                                 );
                               }}
                             >
-                              <Copy className="mr-2" /> Copy URL
+                              <Copy className="mr-2" /> Copy Invite URL
                             </Button>
                           )}
                         </div>

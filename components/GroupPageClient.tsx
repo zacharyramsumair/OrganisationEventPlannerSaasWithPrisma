@@ -82,7 +82,7 @@ const GroupPageClient = ({ groupInfo, currentUser }: any) => {
                                 );
                               }}
                             >
-                              <Copy className="mr-2" /> Copy URL
+                              <Copy className="mr-2" /> Copy Invite URL
                             </Button>
                           )}
 						  

@@ -29,6 +29,7 @@ const Dashboard = (props: Props) => {
             <p className="mb-2 text-justify">
               Description: {props.organisationInformation.description || "N/A"}
             </p>
+            <p className="mb-2">View More Link: {props.organisationInformation.viewMoreLink || "N/A"}</p>
             <p className="mb-2">Email: {props.organisationInformation.email || "N/A"}</p>
             <p className="mb-2">Contact Number: {props.organisationInformation.contactNumber || "N/A"}</p>
             <Link href={`/editOrganisation`}>

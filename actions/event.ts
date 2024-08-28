@@ -308,7 +308,7 @@ const getOrganisationByUsername = async (organisationUsername: string) => {
 		// Fetch organisation by username
 		const organisation = await db.organisation.findUnique({
 			where: { username: organisationUsername },
-			select: { name: true, username: true },
+			select: { name: true, username: true, description: true, viewMoreLink: true },
 		});
 
 		if (!organisation) {

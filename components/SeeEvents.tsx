@@ -11,14 +11,14 @@ interface SeeEventsProps {
 	organisationUsername?: string;
 	groupJoincode?: string;
 	groupsForCombobox?: any;
-  currentUser?:any;
+	currentUser?: any;
 }
 
 const SeeEvents: React.FC<SeeEventsProps> = ({
 	organisationUsername,
 	groupJoincode,
 	groupsForCombobox,
-  currentUser,
+	currentUser,
 }) => {
 	const [view, setView] = useState<"calendar" | "list">("calendar");
 	const [groupValue, setGroupValue] = useState("#$%everyone");
@@ -41,19 +41,21 @@ const SeeEvents: React.FC<SeeEventsProps> = ({
 	return (
 		<>
 			<div className="flex flex-col lg:flex-row lg:justify-center lg:space-x-4 mt-5">
-				{groupsForCombobox && currentUser && <motion.div
-					whileHover={{ scale: 1.1 }}
-					whileTap={{ scale: 0.9 }}
-					onClick={switchToCalendarView}
-					className="cursor-pointer flex flex-col items-center text-primary w-full mb-4 lg:mb-0 lg:w-auto"
-				>
-					<SelectGroupCombobox
-						value={groupValue}
-						setValue={setGroupValue}
-						changeValueTotalFunction={changeValueTotalFunction}
-						groupsForCombobox={groupsForCombobox}
-					/>
-				</motion.div>}
+				{groupsForCombobox && currentUser && (
+					<motion.div
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.9 }}
+						onClick={switchToCalendarView}
+						className="cursor-pointer flex flex-col items-center text-primary w-full mb-4 lg:mb-0 lg:w-auto"
+					>
+						<SelectGroupCombobox
+							value={groupValue}
+							setValue={setGroupValue}
+							changeValueTotalFunction={changeValueTotalFunction}
+							groupsForCombobox={groupsForCombobox}
+						/>
+					</motion.div>
+				)}
 
 				<div className="flex justify-center space-x-4">
 					<motion.div
@@ -87,17 +89,15 @@ const SeeEvents: React.FC<SeeEventsProps> = ({
 					<ShowCalendar
 						organisationUsername={organisationUsername}
 						groupJoincode={groupJoincode}
-            groupValue={groupValue}
-            currentUser={currentUser}
+						groupValue={groupValue}
+						currentUser={currentUser}
 					/>
 				) : (
 					<EventsList
 						organisationUsername={organisationUsername}
 						groupJoincode={groupJoincode}
-            groupValue={groupValue}
-            currentUser={currentUser}
-
-
+						groupValue={groupValue}
+						currentUser={currentUser}
 					/>
 				)}
 			</div>

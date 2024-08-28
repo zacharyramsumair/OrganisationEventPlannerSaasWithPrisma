@@ -38,14 +38,15 @@ model User {
 }
 
 model Group {
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  joincode            String  @unique
-  secret              String
-  name                String
-  description         String?
-  image               String?
-  adminOrganisationIds String[]   @db.ObjectId
-  organisations       String[] @db.ObjectId
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  joincode             String   @unique
+  secret               String
+  name                 String
+  description          String?
+  image                String?
+  adminOrganisationIds String[] @db.ObjectId
+  organisations        String[] @db.ObjectId
+  hiddenEvents         String[] @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,6 +57,7 @@ model Organisation {
   name                   String
   username               String   @unique
   description            String?
+  viewMoreLink           String?
   email                  String?
   contactNumber          String?
   verified               Boolean  @default(false)

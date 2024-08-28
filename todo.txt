@@ -10,3 +10,12 @@ Update 2
 
 • make admin (admin could leave group but must leave another admin, if last person leaves group, delete the group)
 • 
+
+
+
+before public
+to organisation page: add description add view more link
+to group calendar page, make the organisation be a link to their calendar
+when error, log out and tell them to log in again and if that doesn't work clear their cookies
+404 page for group not found
+

@@ -42,6 +42,7 @@ export const logout = async () => {
 	revalidatePath("/");
 };
 
+
 export const loginWithCreds = async (formData: FormData) => {
 	const rawFormData = {
 		email: formData.get("email"),
