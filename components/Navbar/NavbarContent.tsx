@@ -6,6 +6,8 @@ import { ModeToggle } from "../ui/toggle-mode";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { logout } from "@/actions/auth";
+import { toast } from "@/components/ui/use-toast";
+
 
 type Props = {
 	currentUser: any;
@@ -67,7 +69,7 @@ const NavbarContent = (props: Props) => {
 					</Link>
 				</div>
 				<div className="hidden lg:flex space-x-4 items-center">
-					{!currentUser && <Link href="/login">Login</Link>}
+					{!currentUser && <Link href="/login" onClick={() => toast({title: "Can't get to Login page?", description: "Please clear your cookies for this site and try again."})}>Login</Link>}
 					<Link href="/calendar">Calendar</Link>
 					{currentUser && currentUser?.organisations?.length > 0 && (
 						<Link href="/dashboard">Dashboard</Link>
@@ -108,7 +110,11 @@ const NavbarContent = (props: Props) => {
 							<Link
 								href="/login"
 								className="mx-4 my-2"
-								onClick={closeDrawer}
+								// onClick={closeDrawer}
+								onClick={() =>{
+									closeDrawer();
+									toast({title: "Can't get to Login page?", description: "Please clear your cookies for this site and try again."})
+								}}
 							>
 								Login
 							</Link>
